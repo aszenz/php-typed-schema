@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<psalm 
+    errorLevel="1" 
+    resolveFromConfigFile="true"
+    findUnusedVariablesAndParams="true"
+    findUnusedPsalmSuppress="true"
+    ensureArrayStringOffsetsExist="true"
+    ensureArrayIntOffsetsExist="true"
+    checkForThrowsDocblock="true"
+    checkForThrowsInGlobalScope="true"
+    strictBinaryOperands="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config" 
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <directory name="tests"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+    <stubs>
+        <file name="./tools/stubs/NumberFormatter.stub"/>
+        <file name="./tools/stubs/DateTimeImmutable.stub"/>
+    </stubs>
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+    <issueHandlers>
+        <RedundantConditionGivenDocblockType>
+            <errorLevel type="suppress">
+                <directory name="tests" />
+            </errorLevel>
+        </RedundantConditionGivenDocblockType>
+        <MissingThrowsDocblock>
+            <errorLevel type="suppress">
+                <directory name="tests" />
+            </errorLevel>
+        </MissingThrowsDocblock>
+    </issueHandlers>
+    <ignoreExceptions>
+        <class name="LogicException" />
+    </ignoreExceptions>
+</psalm>

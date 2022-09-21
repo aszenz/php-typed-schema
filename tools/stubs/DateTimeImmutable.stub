@@ -1,0 +1,13 @@
+<?php
+
+class DateTimeImmutable
+{
+    /**
+     * @psalm-pure
+     *
+     * @return static|false
+     */
+    public static function createFromFormat(string $format, string $datetime, ?DateTimeZone $timezone = null)
+    {
+    }
+}

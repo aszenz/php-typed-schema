@@ -1,0 +1,23 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    #- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+parameters:
+    level: max 
+    checkGenericClassInNonGenericObjectType: false
+    checkUninitializedProperties: true
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        implicitThrows: false
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        -
+            message: '#.*missing from the PHPDoc @throws tag#'
+            path: tests
+        -   
+            message: '#.*will always evaluate to true#'
+            path: tests

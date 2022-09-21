@@ -1,0 +1,33 @@
+{
+  "name": "asrar/decoder",
+  "autoload": {
+    "psr-4": {
+      "Exp\\": "src/",
+      "Test\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "asrar",
+      "email": "aszenx@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "vimeo/psalm": "^4.23",
+    "friendsofphp/php-cs-fixer": "^3.10",
+    "ramsey/composer-repl": "^1.4",
+    "giorgiosironi/eris": "^0.13.0",
+    "phpstan/phpstan": "^1.8",
+    "phpstan/phpstan-strict-rules": "^1.4",
+    "phpstan/phpstan-phpunit": "^1.1",
+    "psalm/plugin-phpunit": "^0.17.0",
+    "infection/infection": "^0.26.15"
+  },
+  "config": {
+    "allow-plugins": {
+      "ramsey/composer-repl": true,
+      "infection/extension-installer": true
+    }
+  }
+}

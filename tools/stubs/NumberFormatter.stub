@@ -1,0 +1,13 @@
+<?php
+
+class NumberFormatter
+{
+    /**
+     * @psalm-pure
+     */
+    public function parse(
+        string $string,
+        int $type = \NumberFormatter::TYPE_DOUBLE,
+        int $rw_position = null
+    ): false|float {}
+}

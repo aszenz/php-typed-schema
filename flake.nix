@@ -86,7 +86,7 @@
           shellHook = "";
         });
 
-      devShells = dream2NixOutputs.devShells;
+      # devShells = dream2NixOutputs.devShells;
 
       # Executed by `nix flake check`
       # checks."<system>"."<name>" = derivation;

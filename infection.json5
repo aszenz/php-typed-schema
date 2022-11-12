@@ -5,6 +5,10 @@
             "src"
         ]
     },
+    "phpUnit": {
+        "configDir": "./",
+        "customPath": "vendor/bin/phpunit"
+    },
     "mutators": {
         "@default": true
     }

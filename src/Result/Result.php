@@ -92,10 +92,10 @@ final class Result
      */
     public function unwrap()
     {
-        if ($this->v instanceof Ok) {
-            return $this->v->value;
+        if ($this->v instanceof Error) {
+            throw new \Error('Error');
         }
-        throw new \Error('Error');
+        return $this->v->value;
     }
 
     /**
@@ -114,11 +114,10 @@ final class Result
      */
     public function match(callable $onOk, callable $onErr)
     {
-        if ($this->v instanceof Ok) {
-            return $onOk($this->v->value);
+        if($this->v instanceof Error) {
+            return $onErr($this->v->errors);
         }
-
-        return $onErr($this->v->errors);
+        return $onOk($this->v->value);
     }
 
     /**
@@ -132,11 +131,10 @@ final class Result
      */
     public function map(callable $mapperFn): Result
     {
-        if ($this->v instanceof Ok) {
-            return new self($this->v->map($mapperFn));
+        if($this->v instanceof Error) {
+            return self::err($this->v->errors);
         }
-
-        return new self($this->v);
+        return self::ok($this->v->map($mapperFn)->value);
     }
 
     /**
@@ -171,11 +169,10 @@ final class Result
      */
     public function andThen(callable $mapperFn): Result
     {
-        if ($this->v instanceof Ok) {
-            return $this->v->map($mapperFn)->value;
+        if ($this->v instanceof Error) {
+            return self::err($this->v->errors);
         }
-
-        return new self($this->v);
+        return $this->v->map($mapperFn)->value;
     }
 
     /**
@@ -189,6 +186,10 @@ final class Result
      */
     public static function combine(array $results): Result
     {
+        /**
+         * @var Result<list<T>>
+         */
+        $empty = Result::ok([]);
         return \array_reduce(
             $results,
             /**
@@ -212,7 +213,7 @@ final class Result
                     fn (array $previousValues, $currentValue): array => [...$previousValues, $currentValue]
                 );
             },
-            Result::ok([])
+            $empty
         );
     }
 

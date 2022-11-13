@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Exp\Result\Result
  *
  * @uses \Exp\Result\Ok
+ * @uses \Exp\Result\Error
  */
 final class ResultTest extends TestCase
 {

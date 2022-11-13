@@ -422,7 +422,7 @@ final class Decoder
                         return Result::err(\sprintf('Expected numeric string value got %s', \get_debug_type($value)));
                     }
 
-                    return Result::ok((float) $value);
+                    return Result::ok((string) ((int) $value) === $value ? (int) $value : (float) $value);
                 }
                 if (!is_string($value)) {
                     return Result::err(\sprintf('Expected numeric string value got %s', \get_debug_type($value)));

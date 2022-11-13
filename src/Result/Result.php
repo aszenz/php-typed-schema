@@ -95,6 +95,7 @@ final class Result
         if ($this->v instanceof Error) {
             throw new \Error('Error');
         }
+
         return $this->v->value;
     }
 
@@ -114,9 +115,10 @@ final class Result
      */
     public function match(callable $onOk, callable $onErr)
     {
-        if($this->v instanceof Error) {
+        if ($this->v instanceof Error) {
             return $onErr($this->v->errors);
         }
+
         return $onOk($this->v->value);
     }
 
@@ -131,9 +133,10 @@ final class Result
      */
     public function map(callable $mapperFn): Result
     {
-        if($this->v instanceof Error) {
+        if ($this->v instanceof Error) {
             return self::err($this->v->errors);
         }
+
         return self::ok($this->v->map($mapperFn)->value);
     }
 
@@ -172,6 +175,7 @@ final class Result
         if ($this->v instanceof Error) {
             return self::err($this->v->errors);
         }
+
         return $this->v->map($mapperFn)->value;
     }
 
@@ -190,6 +194,7 @@ final class Result
          * @var Result<list<T>>
          */
         $empty = Result::ok([]);
+
         return \array_reduce(
             $results,
             /**
@@ -362,7 +367,7 @@ final class Result
      *
      * @psalm-return Result<V>
      */
-    public function andMap(self $resultGen): self
+    private function andMap(self $resultGen): self
     {
         return self::map2(
             $this,

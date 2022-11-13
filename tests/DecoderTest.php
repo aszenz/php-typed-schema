@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Test;
 
-use Eris\Generators;
 use Eris\TestTrait;
 use Exp\Decoder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Exp\Decoder
- * @uses Exp\Result\Result
- * @uses Exp\Result\Ok
- * @uses Exp\Result\Error
+ * @covers \Exp\Decoder
+ *
+ * @uses \Exp\Result\Result
+ * @uses \Exp\Result\Ok
+ * @uses \Exp\Result\Error
  */
 final class DecoderTest extends TestCase
 {
@@ -138,7 +138,6 @@ final class DecoderTest extends TestCase
         self::assertTrue($decoder->run('13-12-1995')->unwrap() instanceof \DateTimeImmutable);
         self::assertSame('13-12-1995', $decoder->run('13-12-1995')->unwrap()->format('d-m-Y'));
         self::assertFalse($decoder->run('hello')->isOk());
-        // self::assertFalse($decoder->run('32-11-1990')->isOk());
         self::assertFalse($decoder->run(0)->isOk());
     }
 
@@ -150,7 +149,8 @@ final class DecoderTest extends TestCase
         self::assertTrue($decoder->run(-123.1)->isOk());
         self::assertSame(-123.1, $decoder->run(-123.1)->unwrap());
         self::assertSame(123.1, $decoder->run('123.1')->unwrap());
-        // self::assertSame(12, $decoder->run('12')->unwrap());
+        self::assertSame(123.132, $decoder->run('123.132')->unwrap());
+        self::assertSame(12, $decoder->run('12')->unwrap());
         self::assertTrue($decoder->run(100)->isOk());
         self::assertTrue($decoder->run(-100)->isOk());
         self::assertTrue($decoder->run(0.12)->isOk());
@@ -218,19 +218,6 @@ final class DecoderTest extends TestCase
             $decoder->run(false)->isErr()
         );
     }
-
-    // public function testNaturalNumbersMagnitude()
-    // {
-    //     $this->forAll(
-    //         Generators::choose(0, 1000)
-    //     )
-    //         ->then(function ($number) {
-    //             $this->assertTrue(
-    //                 $number < 42,
-    //                 "$number is not less than 42 apparently"
-    //             );
-    //         });
-    // }
 }
 
 /**

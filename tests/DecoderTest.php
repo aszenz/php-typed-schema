@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test;
 
-use Eris\TestTrait;
 use Exp\Decoder;
 use PHPUnit\Framework\TestCase;
 
@@ -17,8 +16,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class DecoderTest extends TestCase
 {
-    use TestTrait;
-
     public function testBool(): void
     {
         self::assertTrue(Decoder::bool()->run(true)->isOk());
@@ -193,6 +190,47 @@ final class DecoderTest extends TestCase
         self::assertTrue($decodingResult->isOk());
     }
 
+    public function testArrayShapeToDto(): void
+    {
+        /** @var mixed */
+        $arrayShape = ['id' => 1, 'quantity' => '123.20', 'order_date' => '02-02-2021'];
+
+        $dtoDecoder = Decoder::map3(
+            Decoder::arrayKey('id', Decoder::int()),
+            Decoder::arrayKey('quantity', Decoder::numeric()),
+            Decoder::arrayKey('order_date', Decoder::dateString('d-m-Y')),
+            /** @psalm-pure */
+            fn (int $id, float $qty, \DateTimeImmutable $date) => new Order($id, $qty, $date)
+        );
+
+        $dto = $dtoDecoder->run($arrayShape)->unwrap();
+
+        self::assertEquals(1, $dto->id);
+        self::assertEquals(123.20, $dto->qty);
+    }
+
+    public function testListOfArrayShapeToListOfDto(): void
+    {
+        /** @var mixed */
+        $arrayShape = [
+            ['id' => 1, 'quantity' => '123.20', 'order_date' => '02-02-2021'],
+            ['id' => 2, 'quantity' => '3.20', 'order_date' => '03-04-2021'],
+        ];
+
+        $dtoDecoder = Decoder::map3(
+            Decoder::arrayKey('id', Decoder::int()),
+            Decoder::arrayKey('quantity', Decoder::numeric()),
+            Decoder::arrayKey('order_date', Decoder::dateString('d-m-Y')),
+            /** @psalm-pure */
+            fn (int $id, float $qty, \DateTimeImmutable $date) => new Order($id, $qty, $date)
+        );
+
+        $listOfDtos = Decoder::listOf($dtoDecoder)->run($arrayShape)->unwrap();
+
+        self::assertEquals(1, $listOfDtos[0]->id ?? '');
+        self::assertEquals(3.20, $listOfDtos[1]->qty ?? '');
+    }
+
     public function testMap(): void
     {
         $decoder = Decoder::bool()->map(fn (bool $value): int => $value ? 1 : 0);
@@ -217,6 +255,19 @@ final class DecoderTest extends TestCase
         self::assertTrue(
             $decoder->run(false)->isErr()
         );
+    }
+}
+
+/**
+ * @psalm-immutable
+ */
+final class Order
+{
+    public function __construct(
+        public int $id,
+        public float $qty,
+        public \DateTimeImmutable $date
+    ) {
     }
 }
 

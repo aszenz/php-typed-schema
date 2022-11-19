@@ -1,17 +1,30 @@
 {
-  "name": "asrar/decoder",
+  "name": "aszenz/php-typed-schema",
+  "description": "A php library to parse mixed data into proper types",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "validation"
+  ],
+  "readme": "README.md",
+  "authors": [
+    {
+      "name": "aszenz",
+      "email": "aszenz@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/aszenz/php-typed-schema",
+  "support": {
+    "issues": "https://github.com/aszenz/php-typed-schema/issues",
+    "source": "https://github.com/aszenz/php-typed-schema",
+    "docs": "https://github.com/aszenz/php-typed-schema/README.md"
+  },
   "autoload": {
     "psr-4": {
       "Exp\\": "src/",
       "Test\\": "tests/"
     }
   },
-  "authors": [
-    {
-      "name": "asrar",
-      "email": "aszenx@gmail.com"
-    }
-  ],
   "require-dev": {
     "phpunit/phpunit": "^9",
     "vimeo/psalm": "^4.23",
@@ -30,5 +43,6 @@
       "ramsey/composer-repl": true,
       "infection/extension-installer": true
     }
-  }
+  },
+  "scripts": {}
 }

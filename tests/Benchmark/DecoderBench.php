@@ -12,7 +12,7 @@ class DecoderBench
      * @Revs(1000)
      * @Iterations(5)
      */
-    public function benchOneOf()
+    public function benchOneOf(): void
     {
         $decoder = Decoder::oneOf(Decoder::bool(), Decoder::int(), Decoder::float());
         $decoder->run(5.0);

@@ -45,16 +45,16 @@ final class ResultTest extends TestCase
     public function testMatchWithOk(): void
     {
         $val = Result::ok(5);
-        $val->match(
+        $_ = $val->match(
             onOk: fn ($value) => self::assertEquals(5, $value),
-            onErr: fn ($err) => self::fail('Should not be possible')
+            onErr: fn ($_) => self::fail('Should not be possible')
         );
     }
 
     public function testMatchWithErr(): void
     {
         $val = Result::err(['missing value']);
-        $val->match(
+        $_ = $val->match(
             onErr: fn ($value) => self::assertEquals(['missing value'], $value),
             onOk: fn ($_) => self::fail('Should not be possible')
         );
@@ -75,7 +75,7 @@ final class ResultTest extends TestCase
     {
         $val = Result::err(['missing value']);
         self::assertTrue(
-            $val->map(fn ($value) => $value * 10)->isErr()
+            $val->map(fn ($_) => 1)->isErr()
         );
     }
 

@@ -87,6 +87,37 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::object()->run(-10123)->isOk());
     }
 
+    public function testLiteralWithSameValues(): void
+    {
+        self::assertTrue(Decoder::literal(5)->run(5)->isOk());
+        self::assertFalse(Decoder::literal(5)->run(5)->isErr());
+        self::assertSame(5, Decoder::literal(5)->run(5)->unwrap());
+
+        self::assertTrue(Decoder::literal('hi')->run('hi')->isOk());
+        self::assertFalse(Decoder::literal('hi')->run('hi')->isErr());
+        self::assertSame('hi', Decoder::literal('hi')->run('hi')->unwrap());
+
+        self::assertTrue(Decoder::literal(true)->run(true)->isOk());
+        self::assertFalse(Decoder::literal(true)->run(true)->isErr());
+        self::assertTrue(Decoder::literal(true)->run(true)->unwrap());
+
+        self::assertTrue(Decoder::literal(9.0)->run(9.0)->isOk());
+        self::assertFalse(Decoder::literal(9.0)->run(9.0)->isErr());
+        self::assertSame(9.0, Decoder::literal(9.0)->run(9.0)->unwrap());
+    }
+
+    public function testLiteralWithDifferentValues(): void
+    {
+        self::assertTrue(Decoder::literal(5)->run(4)->isErr());
+        self::assertFalse(Decoder::literal(5)->run(4)->isOk());
+        self::assertTrue(Decoder::literal('hi')->run(4)->isErr());
+        self::assertFalse(Decoder::literal('hi')->run('hii')->isOk());
+        self::assertTrue(Decoder::literal(false)->run(true)->isErr());
+        self::assertFalse(Decoder::literal(false)->run(true)->isOk());
+        self::assertTrue(Decoder::literal(9.0)->run(9)->isErr());
+        self::assertFalse(Decoder::literal(9.0)->run(9)->isOk());
+    }
+
     public function testObjectOf(): void
     {
         self::assertTrue(Decoder::objectOf(\DateTime::class)->run(new \DateTime())->isOk());

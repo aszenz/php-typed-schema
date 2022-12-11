@@ -8,14 +8,13 @@ use Exp\Result\Result;
 
 /**
  * TODO:
- * 1. Add support for decoding literal types (strings, no's)
- * 2. Better error handling and messages
- * 3. Decoding nested array key `at` support, maybe use symfony array accessor
- * 4. More mapping functions map1 to map8
- * 5. And map function to create inifinte mappings of more than 8
- * 6. Support for decoding into tuples
- * 7. Add support for lazy
- * 8. Support encoding.
+ * 1. Better error handling and messages
+ * 2. Decoding nested array key `at` support, maybe use symfony array accessor
+ * 3. More mapping functions map1 to map8
+ * 4. And map function to create inifinte mappings of more than 8
+ * 5. Support for decoding into tuples
+ * 6. Add support for lazy
+ * 7. Support encoding.
  *
  * @template-covariant T
  *
@@ -351,6 +350,29 @@ final class Decoder
                 }
 
                 return $decoder->run($value);
+            }
+        );
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @template V of scalar
+     *
+     * @psalm-param V $literal
+     *
+     * @psalm-return self<V>
+     */
+    public static function literal(int|string|float|bool $literal): self
+    {
+        return new self(
+            /**
+             * @psalm-return Result<V>
+             */
+            function (mixed $value) use ($literal): Result {
+                return $value === $literal
+                    ? Result::ok($literal)
+                    : Result::err("Doesn't match");
             }
         );
     }

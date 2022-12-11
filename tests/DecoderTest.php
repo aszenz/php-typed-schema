@@ -100,10 +100,6 @@ final class DecoderTest extends TestCase
         self::assertTrue(Decoder::literal(true)->run(true)->isOk());
         self::assertFalse(Decoder::literal(true)->run(true)->isErr());
         self::assertTrue(Decoder::literal(true)->run(true)->unwrap());
-
-        self::assertTrue(Decoder::literal(9.0)->run(9.0)->isOk());
-        self::assertFalse(Decoder::literal(9.0)->run(9.0)->isErr());
-        self::assertSame(9.0, Decoder::literal(9.0)->run(9.0)->unwrap());
     }
 
     public function testLiteralWithDifferentValues(): void
@@ -114,8 +110,6 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::literal('hi')->run('hii')->isOk());
         self::assertTrue(Decoder::literal(false)->run(true)->isErr());
         self::assertFalse(Decoder::literal(false)->run(true)->isOk());
-        self::assertTrue(Decoder::literal(9.0)->run(9)->isErr());
-        self::assertFalse(Decoder::literal(9.0)->run(9)->isOk());
     }
 
     public function testObjectOf(): void

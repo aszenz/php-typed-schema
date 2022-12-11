@@ -357,13 +357,13 @@ final class Decoder
     /**
      * @psalm-pure
      *
-     * @template V of scalar
+     * @template V of null|false|true|literal-string|literal-int
      *
      * @psalm-param V $literal
      *
      * @psalm-return self<V>
      */
-    public static function literal(int|string|float|bool $literal): self
+    public static function literal($literal): self
     {
         return new self(
             /**

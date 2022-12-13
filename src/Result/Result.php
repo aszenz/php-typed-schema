@@ -51,7 +51,7 @@ final class Result
     /**
      * @psalm-pure
      *
-     * @psalm-param list<string>|string $errs
+     * @psalm-param non-empty-list<non-empty-string>|non-empty-string $errs
      *
      * @psalm-return self<never>
      */
@@ -100,6 +100,20 @@ final class Result
     }
 
     /**
+     * @psalm-return non-empty-list<non-empty-string>
+     *
+     * @throws \Error
+     */
+    public function unwrapError(): array
+    {
+        if ($this->v instanceof Ok) {
+            throw new \Error('Result is Ok no error present');
+        }
+
+        return $this->v->errors;
+    }
+
+    /**
      * @template OnOkReturn
      * @template OnErrReturn
      *
@@ -107,9 +121,9 @@ final class Result
      *
      * @psalm-param pure-callable(ValType): OnOkReturn $onOk
      *
-     * @param callable(list<string>): OnErrReturn $onErr
+     * @param callable(list<non-empty-string>): OnErrReturn $onErr
      *
-     * @psalm-param pure-callable(list<string>): OnErrReturn $onErr
+     * @psalm-param pure-callable(non-empty-list<non-empty-string>): OnErrReturn $onErr
      *
      * @psalm-return OnOkReturn|OnErrReturn
      */

@@ -108,7 +108,7 @@ final class Decoder
     /**
      * @psalm-pure
      *
-     * @psalm-param list<string>|string $err
+     * @psalm-param non-empty-list<non-empty-string>|non-empty-string $err
      *
      * @psalm-return self<never>
      */
@@ -132,7 +132,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_bool($value)) {
-                    return Result::err(\sprintf('Expected boolean value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected boolean value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -153,7 +153,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_string($value)) {
-                    return Result::err(\sprintf('Expected string value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected string value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -174,7 +174,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_int($value)) {
-                    return Result::err(\sprintf('Expected int value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected int value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -195,7 +195,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_float($value)) {
-                    return Result::err(\sprintf('Expected float value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected float value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -216,7 +216,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_array($value)) {
-                    return Result::err(\sprintf('Expected array value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected array value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -237,7 +237,7 @@ final class Decoder
              */
             function (mixed $value): Result {
                 if (!is_object($value)) {
-                    return Result::err(\sprintf('Expected object value, got %s', \get_debug_type($value)));
+                    return Result::err('Expected object value, got '.\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -262,7 +262,7 @@ final class Decoder
              */
             function (mixed $value) use ($class): Result {
                 if (!$value instanceof $class) {
-                    return Result::err(\sprintf('Expected object of class %s, got %s', $class, \get_debug_type($value)));
+                    return Result::err("Expected object of class $class got ".\get_debug_type($value));
                 }
 
                 return Result::ok($value);
@@ -441,15 +441,15 @@ final class Decoder
             function (mixed $value) use ($formatter): Result {
                 if (null === $formatter) {
                     if (!is_numeric($value)) {
-                        return Result::err(\sprintf('Expected numeric string value got %s', \get_debug_type($value)));
+                        return Result::err('Expected numeric string value got '.\get_debug_type($value));
                     }
 
                     return Result::ok((string) ((int) $value) === $value ? (int) $value : (float) $value);
                 }
                 if (!is_string($value)) {
-                    return Result::err(\sprintf('Expected numeric string value got %s', \get_debug_type($value)));
+                    return Result::err('Expected numeric string value got '.\get_debug_type($value));
                 }
-                $parsedNumber = $formatter->parse($value, \NumberFormatter::TYPE_DEFAULT);
+                $parsedNumber = $formatter->parse($value);
                 if (false === $parsedNumber) {
                     return Result::err('Not a valid number in this locale');
                 }
@@ -489,7 +489,7 @@ final class Decoder
              */
             function (array $value): Decoder {
                 if (!array_is_list($value)) {
-                    return Decoder::fail(\sprintf('Array %s is not a list', \print_r($value, true)));
+                    return Decoder::fail('Array '.\print_r($value, true).' is not a list');
                 }
 
                 return Decoder::succeed($value);
@@ -545,7 +545,7 @@ final class Decoder
                      */
                     fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
                     /**
-                     * @param list<string> $decoderErrs
+                     * @param non-empty-list<non-empty-string> $decoderErrs
                      *
                      * @return self<V>
                      */
@@ -588,7 +588,7 @@ final class Decoder
                      */
                     fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
                     /**
-                     * @param list<string> $decoderErrs
+                     * @param non-empty-list<non-empty-string> $decoderErrs
                      *
                      * @return self<V>
                      */
@@ -670,7 +670,7 @@ final class Decoder
                  */
                 fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
                 /**
-                 * @param list<string> $errors
+                 * @param non-empty-list<non-empty-string> $errors
                  *
                  * @return self<list<V>>
                  */
@@ -720,7 +720,7 @@ final class Decoder
                      */
                     fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
                     /**
-                     * @param list<string> $errors
+                     * @param non-empty-list<non-empty-string> $errors
                      *
                      * @return self<non-empty-list<V>>
                      */
@@ -767,7 +767,7 @@ final class Decoder
                  */
                 fn (array $decodedVal): self => self::succeed($decodedVal),
                 /**
-                 * @param list<string> $decodingErrs
+                 * @param non-empty-list<non-empty-string> $decodingErrs
                  *
                  * @return self<array<string, V>>
                  */

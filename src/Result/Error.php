@@ -12,7 +12,7 @@ namespace Exp\Result;
 final class Error
 {
     /**
-     * @param list<string> $errors
+     * @param non-empty-list<non-empty-string> $errors
      */
     public function __construct(
         public array $errors

@@ -39,6 +39,11 @@
                 <directory name="tests" />
             </errorLevel>
         </MissingThrowsDocblock>
+        <UncaughtThrowInGlobalScope>
+            <errorLevel type="suppress">
+                <directory name="tests" />
+            </errorLevel>
+        </UncaughtThrowInGlobalScope>
     </issueHandlers>
     <ignoreExceptions>
         <class name="LogicException" />

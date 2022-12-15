@@ -24,21 +24,6 @@ final class Result
      *
      * @template T
      *
-     * @psalm-param Ok<T>|Error $v
-     *
-     * @psalm-return Result<T>
-     */
-    public static function new(
-        Ok|Error $v
-    ): self {
-        return new self($v);
-    }
-
-    /**
-     * @psalm-pure
-     *
-     * @template T
-     *
      * @psalm-param T $value
      *
      * @psalm-return self<T>
@@ -93,7 +78,7 @@ final class Result
     public function unwrap()
     {
         if ($this->v instanceof Error) {
-            throw new \Error('Error');
+            throw new \Error('Result is Error, no value present');
         }
 
         return $this->v->value;
@@ -369,28 +354,6 @@ final class Result
              * @psalm-param array{T1, T2, T3, T4, T5, T6} $out
              */
             fn (array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4], $out[5])
-        );
-    }
-
-    /**
-     * @template V
-     *
-     * @param Result<callable(ValType):V> $resultGen
-     *
-     * @psalm-param Result<pure-callable(ValType):V> $resultGen
-     *
-     * @psalm-return Result<V>
-     */
-    private function andMap(self $resultGen): self
-    {
-        return self::map2(
-            $this,
-            $resultGen,
-            /**
-             * @psalm-param pure-callable(ValType):V $func
-             * @psalm-param ValType $arg
-             */
-            fn ($arg, callable $func) => $func($arg)
         );
     }
 

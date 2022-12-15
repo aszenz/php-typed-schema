@@ -76,6 +76,20 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::array()->run(new \stdClass())->isOk());
     }
 
+    public function testList(): void
+    {
+        self::assertTrue(Decoder::list()->run([])->isOk());
+        self::assertTrue(Decoder::list()->run([1, 2])->isOk());
+        self::assertFalse(Decoder::list()->run(['hi' => 1, 'bye' => 2])->isOk());
+        self::assertTrue(Decoder::list()->run([0 => 1, 1 => 21, 2 => 4])->isOk());
+        self::assertFalse(Decoder::list()->run([0 => 1, 1 => 2, 4 => 4])->isOk());
+        self::assertFalse(Decoder::list()->run(false)->isOk());
+        self::assertFalse(Decoder::list()->run(0)->isOk());
+        self::assertFalse(Decoder::list()->run(-1)->isOk());
+        self::assertFalse(Decoder::list()->run(-10123)->isOk());
+        self::assertFalse(Decoder::list()->run(new \stdClass())->isOk());
+    }
+
     public function testObject(): void
     {
         self::assertTrue(Decoder::object()->run(new \DateTime())->isOk());
@@ -126,7 +140,7 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::unionOf(Decoder::bool(), Decoder::int())->run('string')->isOk());
     }
 
-    public function testOneOf(): void
+    public function testOneOfWithSuccess(): void
     {
         $decoder = Decoder::oneOf(
             Decoder::bool()->map(fn (bool $value): int => $value ? 1 : 0),
@@ -135,6 +149,18 @@ final class DecoderTest extends TestCase
         self::assertTrue($decoder->run(1)->isOk());
         self::assertSame(0, $decoder->run(false)->unwrap());
         self::assertSame(1, $decoder->run(true)->unwrap());
+    }
+
+    public function testOneOfWithFailure(): void
+    {
+        $decoder = Decoder::oneOf(
+            Decoder::bool()->map(fn (bool $value): int => $value ? 1 : 0),
+            Decoder::int()
+        );
+        $onFailure = $decoder->run(1.5);
+        self::assertFalse($onFailure->isOk());
+        self::assertTrue($onFailure->isErr());
+        self::assertSame(2, \count($onFailure->unwrapError()));
     }
 
     public function testNullable(): void
@@ -150,6 +176,8 @@ final class DecoderTest extends TestCase
         $decoder = Decoder::nonEmptyString();
         self::assertTrue($decoder->run('hello')->isOk());
         self::assertFalse($decoder->run('')->isOk());
+        self::assertFalse($decoder->run('  ')->isOk());
+        self::assertTrue($decoder->run('  ')->isErr());
         self::assertFalse($decoder->run(0)->isOk());
     }
 
@@ -182,6 +210,34 @@ final class DecoderTest extends TestCase
         self::assertFalse($decoder->run('-ba')->isOk());
     }
 
+    public function testNumericWithFormatter(): void
+    {
+        $decoder = Decoder::numeric(new \NumberFormatter('nl-NL', \NumberFormatter::DEFAULT_STYLE));
+        self::assertTrue($decoder->run('231')->isOk());
+        self::assertSame(-123.1, $decoder->run('-123,1')->unwrap());
+        self::assertTrue($decoder->run('hi')->isErr());
+
+        $decoder = Decoder::numeric(new \NumberFormatter('en-GB', \NumberFormatter::DEFAULT_STYLE));
+        self::assertTrue($decoder->run('2,231.213')->isOk());
+        self::assertFalse($decoder->run('2,1.213')->isOk());
+        self::assertTrue($decoder->run('hi')->isErr());
+        self::assertSame(-123.1, $decoder->run('-123.1')->unwrap());
+    }
+
+    public function testNumericWithFormatterAndBadString(): void
+    {
+        $decoder = Decoder::numeric(new \NumberFormatter('nl-NL', \NumberFormatter::DEFAULT_STYLE));
+        self::assertTrue($decoder->run('abc')->isErr());
+        self::assertFalse($decoder->run('cde')->isOk());
+    }
+
+    public function testNumericWithFormatterAndBadValue(): void
+    {
+        $decoder = Decoder::numeric(new \NumberFormatter('nl-NL', \NumberFormatter::DEFAULT_STYLE));
+        self::assertTrue($decoder->run(false)->isErr());
+        self::assertFalse($decoder->run(true)->isOk());
+    }
+
     public function testPositiveInt(): void
     {
         $decoder = Decoder::positiveInt();
@@ -194,12 +250,30 @@ final class DecoderTest extends TestCase
         self::assertFalse($decoder->run(-0.0123)->isOk());
     }
 
-    public function testJson(): void
+    public function testArrayKey(): void
+    {
+        $decoder = Decoder::arrayKey('foo', Decoder::int());
+        self::assertTrue($decoder->run(['foo' => 1])->isOk());
+        self::assertFalse($decoder->run(['foooo' => 2])->isOk());
+        self::assertFalse($decoder->run(['foo' => 'hey'])->isOk());
+    }
+
+    public function testOptionalArrayKey(): void
+    {
+        $decoder = Decoder::optionalArrayKey('foo', Decoder::int());
+        self::assertTrue($decoder->run(['foo' => 1])->isOk());
+        self::assertFalse($decoder->run(['foo' => 1])->isErr());
+        self::assertTrue($decoder->run(['foooo' => 2])->isOk());
+        self::assertFalse($decoder->run(['foooo' => 2])->isErr());
+        self::assertNull($decoder->run(['foooo' => 2])->unwrap());
+    }
+
+    public function testJsonWithCorrectJson(): void
     {
         $userJson = <<<JSON
             {
-                "name":  "asrar",
-                "dob":  "14-12-1995",
+                "name":  "sarah",
+                "dob":  "11-11-1985",
                 "age":  26,
                 "hobbies": [
                     {
@@ -213,6 +287,26 @@ final class DecoderTest extends TestCase
         $decodingResult = (new UserDecoder())()->run($userJson);
 
         self::assertTrue($decodingResult->isOk());
+    }
+
+    public function testJsonWithInCorrectJson(): void
+    {
+        $userJson = <<<JSON
+            {
+                "name"  "rar",
+            }
+        JSON;
+
+        $decodingResult = (new UserDecoder())()->run($userJson);
+
+        self::assertTrue($decodingResult->isErr());
+    }
+
+    public function testJsonWithNonStringValue(): void
+    {
+        $decodingResult = (new UserDecoder())()->run(false);
+
+        self::assertTrue($decodingResult->isErr());
     }
 
     public function testArrayShapeToDto(): void
@@ -272,7 +366,7 @@ final class DecoderTest extends TestCase
     public function testAndThen(): void
     {
         $decoder = Decoder::string()->andThen(
-            fn (string $value): Decoder => 'hello' === $value || 'hallo' === $value ? Decoder::succeed(true) : Decoder::fail([])
+            fn (string $value): Decoder => 'hello' === $value || 'hallo' === $value ? Decoder::succeed(true) : Decoder::fail(['not expected value'])
         );
         self::assertTrue(
             $decoder->run('hello')->unwrap()
@@ -280,6 +374,47 @@ final class DecoderTest extends TestCase
         self::assertTrue(
             $decoder->run(false)->isErr()
         );
+    }
+
+    public function testDictOf(): void
+    {
+        $decoder = Decoder::dictOf(Decoder::string());
+
+        self::assertTrue($decoder->run(['bar' => 'foo'])->isOk());
+        self::assertSame(['bar' => 'foo'], $decoder->run(['bar' => 'foo'])->unwrap());
+        self::assertFalse($decoder->run('string')->isOk());
+        self::assertTrue($decoder->run(['bar' => 2])->isErr());
+    }
+
+    public function testMap5(): void
+    {
+        $res = Decoder::map5(
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            fn (string $a, string $b, string $c, string $d, string $e): string => $a.$b.$c.$d.$e
+        )->run('5');
+
+        self::assertTrue($res->isOk());
+        self::assertEquals('55555', $res->unwrap());
+    }
+
+    public function testMap6(): void
+    {
+        $res = Decoder::map6(
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            Decoder::string(),
+            fn (string $a, string $b, string $c, string $d, string $e, string $f): string => $a.$b.$c.$d.$e.$f
+        )->run('a');
+
+        self::assertTrue($res->isOk());
+        self::assertEquals('aaaaaa', $res->unwrap());
     }
 }
 

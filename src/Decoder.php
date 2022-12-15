@@ -446,10 +446,10 @@ final class Decoder
 
                     return Result::ok((string) ((int) $value) === $value ? (int) $value : (float) $value);
                 }
-                if (!is_string($value)) {
-                    return Result::err('Expected numeric string value got '.\get_debug_type($value));
+                if (!is_int($value) && !is_float($value) && !is_string($value)) {
+                    return Result::err('Expected numeric value got '.\get_debug_type($value));
                 }
-                $parsedNumber = $formatter->parse($value);
+                $parsedNumber = $formatter->parse((string) $value);
                 if (false === $parsedNumber) {
                     return Result::err('Not a valid number in this locale');
                 }

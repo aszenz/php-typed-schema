@@ -458,6 +458,32 @@ final class DecoderTest extends TestCase
         self::assertTrue($res->isOk());
         self::assertEquals('aaaaaa', $res->unwrap());
     }
+
+    public function testArrayMap2(): void
+    {
+        $res = Decoder::arrayMap2(
+            Decoder::string(),
+            Decoder::string(),
+            fn (string $a, string $b): string => $a.$b
+        )->run(['a', 'b']);
+
+        self::assertTrue($res->isOk());
+        self::assertEquals('ab', $res->unwrap());
+    }
+
+    public function testArrayMap3(): void
+    {
+        $decoder = Decoder::arrayMap3(
+            Decoder::string(),
+            Decoder::bool(),
+            Decoder::int(),
+            fn (string $a, bool $b, int $c): string|int => $b ? $a : $c
+        );
+
+        self::assertTrue($decoder->run(['hey', false, 1])->isOk());
+        self::assertSame(1, $decoder->run(['hey', false, 1])->unwrap());
+        self::assertTrue($decoder->run([false, 1, 'hey'])->isErr());
+    }
 }
 
 /**

@@ -227,9 +227,9 @@ final class Decoder
                     ? Result::ok($value)
                     : Result::combine(
                         \array_map(
-    /**
+                            /**
                              * @return Result<V>
-     */
+                             */
                             fn (mixed $v): Result => $itemDecoder->run($v),
                             \array_values($value)
                         )
@@ -496,19 +496,19 @@ final class Decoder
                 return null === $valueDecoder
                     ? Decoder::succeed($array[$key])
                     : $valueDecoder->run($array[$key])->match(
-                    /**
-                     * @param V $decodedValueAtKey
-                     *
-                     * @return self<V>
-                     */
-                    fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
-                    /**
-                     * @param non-empty-list<non-empty-string> $decoderErrs
-                     *
-                     * @return self<V>
-                     */
-                    fn (array $decoderErrs): self => self::fail($decoderErrs)
-                );
+                        /**
+                         * @param V $decodedValueAtKey
+                         *
+                         * @return self<V>
+                         */
+                        fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
+                        /**
+                         * @param non-empty-list<non-empty-string> $decoderErrs
+                         *
+                         * @return self<V>
+                         */
+                        fn (array $decoderErrs): self => self::fail($decoderErrs)
+                    );
             }
         );
     }
@@ -541,19 +541,19 @@ final class Decoder
                 return null === $valueDecoder
                     ? Decoder::succeed($array[$key])
                     : $valueDecoder->run($array[$key])->match(
-                    /**
-                     * @param V $decodedValueAtKey
-                     *
-                     * @return self<V>
-                     */
-                    fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
-                    /**
-                     * @param non-empty-list<non-empty-string> $decoderErrs
-                     *
-                     * @return self<V>
-                     */
-                    fn (array $decoderErrs): self => self::fail($decoderErrs)
-                );
+                        /**
+                         * @param V $decodedValueAtKey
+                         *
+                         * @return self<V>
+                         */
+                        fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
+                        /**
+                         * @param non-empty-list<non-empty-string> $decoderErrs
+                         *
+                         * @return self<V>
+                         */
+                        fn (array $decoderErrs): self => self::fail($decoderErrs)
+                    );
             }
         );
     }
@@ -607,36 +607,36 @@ final class Decoder
         return null === $itemDecoder
             ? self::_list()
             : self::_list()->andThen(
-            /**
-             * @psalm-param list<mixed> $list
-             *
-             * @psalm-pure
-             *
-             * @psalm-return self<list<V>>
-             */
-            fn (array $list): Decoder => Result::combine(
-                \array_map(
-                    /**
-                     * @psalm-return Result<V>
-                     */
-                    fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
-                    $list
-                )
-            )->match(
                 /**
-                 * @psalm-param list<V> $listOfDecodedValues
+                 * @psalm-param list<mixed> $list
+                 *
+                 * @psalm-pure
                  *
                  * @psalm-return self<list<V>>
                  */
-                fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
-                /**
-                 * @param non-empty-list<non-empty-string> $errors
-                 *
-                 * @return self<list<V>>
-                 */
-                fn (array $errors): self => self::fail($errors)
-            )
-        );
+                fn (array $list): Decoder => Result::combine(
+                    \array_map(
+                        /**
+                         * @psalm-return Result<V>
+                         */
+                        fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
+                        $list
+                    )
+                )->match(
+                    /**
+                     * @psalm-param list<V> $listOfDecodedValues
+                     *
+                     * @psalm-return self<list<V>>
+                     */
+                    fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
+                    /**
+                     * @param non-empty-list<non-empty-string> $errors
+                     *
+                     * @return self<list<V>>
+                     */
+                    fn (array $errors): self => self::fail($errors)
+                )
+            );
     }
 
     /**
@@ -653,43 +653,43 @@ final class Decoder
         return null === $itemDecoder
             ? self::_nonEmptyList()
             : self::_nonEmptyList()->andThen(
-            /**
-             * @psalm-param non-empty-list<mixed> $list
-             *
-             * @psalm-pure
-             *
-             * @psalm-return self<non-empty-list<V>>
-             */
-            function (array $list) use ($itemDecoder): Decoder {
                 /**
-                 * @psalm-var  Result<non-empty-list<V>>
+                 * @psalm-param non-empty-list<mixed> $list
+                 *
+                 * @psalm-pure
+                 *
+                 * @psalm-return self<non-empty-list<V>>
                  */
-                $res = Result::combine(
-                    \array_map(
-                        /**
-                         * @psalm-return Result<V>
-                         */
-                        fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
-                        $list
-                    )
-                );
+                function (array $list) use ($itemDecoder): Decoder {
+                    /**
+                     * @psalm-var  Result<non-empty-list<V>>
+                     */
+                    $res = Result::combine(
+                        \array_map(
+                            /**
+                             * @psalm-return Result<V>
+                             */
+                            fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
+                            $list
+                        )
+                    );
 
-                return $res->match(
-                    /**
-                     * @psalm-param non-empty-list<V> $listOfDecodedValues
-                     *
-                     * @psalm-return self<non-empty-list<V>>
-                     */
-                    fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
-                    /**
-                     * @param non-empty-list<non-empty-string> $errors
-                     *
-                     * @return self<non-empty-list<V>>
-                     */
-                    fn (array $errors): self => self::fail($errors)
-                );
-            }
-        );
+                    return $res->match(
+                        /**
+                         * @psalm-param non-empty-list<V> $listOfDecodedValues
+                         *
+                         * @psalm-return self<non-empty-list<V>>
+                         */
+                        fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
+                        /**
+                         * @param non-empty-list<non-empty-string> $errors
+                         *
+                         * @return self<non-empty-list<V>>
+                         */
+                        fn (array $errors): self => self::fail($errors)
+                    );
+                }
+            );
     }
 
     /**
@@ -913,6 +913,7 @@ final class Decoder
             )
         );
     }
+
     /**
      * @template V
      *
@@ -952,6 +953,7 @@ final class Decoder
             }
         );
     }
+
     /**
      * @return self<scalar>
      */
@@ -968,6 +970,64 @@ final class Decoder
             }
         );
     }
+
+    /**
+     * @psalm-pure
+     *
+     * @template T1
+     * @template T2
+     * @template R
+     *
+     * @psalm-param self<T1> $decoder1
+     * @psalm-param self<T2> $decoder2
+     *
+     * @param callable(T1, T2): R $mapperFn
+     *
+     * @psalm-param pure-callable(T1, T2): R $mapperFn
+     *
+     * @psalm-return self<R>
+     */
+    public static function arrayMap2(self $decoder1, self $decoder2, callable $mapperFn): self
+    {
+        return new self(
+            fn (mixed $value): Result => self::map2(
+                self::arrayKey(0, $decoder1),
+                self::arrayKey(1, $decoder2),
+                $mapperFn
+            )->run($value)
+        );
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @template T1
+     * @template T2
+     * @template T3
+     * @template R
+     *
+     * @psalm-param self<T1> $decoder1
+     * @psalm-param self<T2> $decoder2
+     * @psalm-param self<T3> $decoder3
+     *
+     * @param callable(T1, T2, T3): R $mapperFn
+     *
+     * @psalm-param pure-callable(T1, T2, T3): R $mapperFn
+     *
+     * @psalm-return self<R>
+     */
+    public static function arrayMap3(self $decoder1, self $decoder2, self $decoder3, callable $mapperFn): self
+    {
+        return new self(
+            fn (mixed $value): Result => self::map3(
+                self::arrayKey(0, $decoder1),
+                self::arrayKey(1, $decoder2),
+                self::arrayKey(2, $decoder3),
+                $mapperFn
+            )->run($value)
+        );
+    }
+
     /**
      * @psalm-pure
      *
@@ -985,6 +1045,7 @@ final class Decoder
             yield $function($element);
         }
     }
+
     /**
      * @psalm-pure
      *

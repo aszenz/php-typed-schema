@@ -914,6 +914,22 @@ final class Decoder
         );
     }
     /**
+     * @return self<scalar>
+     */
+    public static function scalar(): self
+    {
+        return new self(
+            /**
+             * @psalm-return Result<scalar>
+             */
+            function (mixed $value): Result {
+                return \is_scalar($value)
+                    ? Result::ok($value)
+                    : Result::err('Value of type '.\get_debug_type($value).' is not a scalar');
+            }
+        );
+    }
+    /**
      * @psalm-pure
      *
      * @psalm-return self<non-empty-list<mixed>>

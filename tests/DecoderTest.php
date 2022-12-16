@@ -90,6 +90,18 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::list()->run(new \stdClass())->isOk());
     }
 
+    public function testScalar(): void
+    {
+        self::assertTrue(Decoder::scalar()->run(12)->isOk());
+        self::assertTrue(Decoder::scalar()->run(12.2)->isOk());
+        self::assertTrue(Decoder::scalar()->run(false)->isOk());
+        self::assertTrue(Decoder::scalar()->run(null)->isErr());
+        self::assertTrue(Decoder::scalar()->run('')->isOk());
+        self::assertTrue(Decoder::scalar()->run('abc')->isOk());
+        self::assertTrue(Decoder::scalar()->run([1, 2])->isErr());
+        self::assertTrue(Decoder::scalar()->run(new \DateTime())->isErr());
+        self::assertTrue(Decoder::scalar()->run(new \stdClass())->isErr());
+    }
     public function testObject(): void
     {
         self::assertTrue(Decoder::object()->run(new \DateTime())->isOk());

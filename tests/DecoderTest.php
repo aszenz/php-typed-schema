@@ -99,6 +99,9 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::object()->run(-1)->isOk());
         self::assertFalse(Decoder::object()->run([])->isOk());
         self::assertFalse(Decoder::object()->run(-10123)->isOk());
+        self::assertTrue(Decoder::object(\DateTime::class)->run(new \DateTime())->isOk());
+        self::assertFalse(Decoder::object(\DateTimeImmutable::class)->run(new \stdClass())->isOk());
+        self::assertFalse(Decoder::object()->run(false)->isOk());
     }
 
     public function testLiteralWithSameValues(): void
@@ -124,13 +127,6 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::literal('hi')->run('hii')->isOk());
         self::assertTrue(Decoder::literal(false)->run(true)->isErr());
         self::assertFalse(Decoder::literal(false)->run(true)->isOk());
-    }
-
-    public function testObjectOf(): void
-    {
-        self::assertTrue(Decoder::objectOf(\DateTime::class)->run(new \DateTime())->isOk());
-        self::assertFalse(Decoder::objectOf(\DateTimeImmutable::class)->run(new \stdClass())->isOk());
-        self::assertFalse(Decoder::object()->run(false)->isOk());
     }
 
     public function testUnionOf(): void
@@ -344,7 +340,7 @@ final class DecoderTest extends TestCase
             fn (int $id, float $qty, \DateTimeImmutable $date) => new Order($id, $qty, $date)
         );
 
-        $listOfDtos = Decoder::listOf($dtoDecoder)->run($arrayShape)->unwrap();
+        $listOfDtos = Decoder::list($dtoDecoder)->run($arrayShape)->unwrap();
 
         self::assertEquals(1, $listOfDtos[0]->id ?? '');
         self::assertEquals(3.20, $listOfDtos[1]->qty ?? '');
@@ -477,7 +473,7 @@ final class UserDecoder
                 Decoder::arrayKey('name', Decoder::nonEmptyString()),
                 Decoder::arrayKey('dob', Decoder::dateString('d-m-Y')),
                 Decoder::arrayKey('age', Decoder::positiveInt()),
-                Decoder::arrayKey('hobbies', Decoder::nonEmptyListOf(self::hobbyDecoder())),
+                Decoder::arrayKey('hobbies', Decoder::nonEmptyList(self::hobbyDecoder())),
                 /**
                  * @psalm-param non-empty-string $user
                  * @psalm-param positive-int $age

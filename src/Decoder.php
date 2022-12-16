@@ -206,41 +206,35 @@ final class Decoder
     /**
      * @psalm-pure
      *
-     * @psalm-return self<array<array-key, mixed>>
+     * @template V
+     *
+     * @param ?self<V> itemDecoder
+     *
+     * @psalm-return self<array<array-key, V>>
      */
-    public static function array(): self
+    public static function array(self $itemDecoder = null): self
     {
         return new self(
             /**
-             * @return Result<array>
+             * @return Result<array<V>>
              */
-            function (mixed $value): Result {
+            function (mixed $value) use ($itemDecoder): Result {
                 if (!is_array($value)) {
                     return Result::err('Expected array value, got '.\get_debug_type($value));
                 }
 
-                return Result::ok($value);
-            }
-        );
-    }
-
+                return null === $itemDecoder
+                    ? Result::ok($value)
+                    : Result::combine(
+                        \array_map(
     /**
-     * @psalm-pure
-     *
-     * @psalm-return self<object>
+                             * @return Result<V>
      */
-    public static function object(): self
-    {
-        return new self(
-            /**
-             * @return Result<object>
-             */
-            function (mixed $value): Result {
-                if (!is_object($value)) {
-                    return Result::err('Expected object value, got '.\get_debug_type($value));
-                }
-
-                return Result::ok($value);
+                            fn (mixed $v): Result => $itemDecoder->run($v),
+                            \array_values($value)
+                        )
+                    )
+                ;
             }
         );
     }
@@ -250,22 +244,22 @@ final class Decoder
      *
      * @template V
      *
-     * @psalm-param class-string<V> $class
+     * @psalm-param ?class-string<V> $class
      *
-     * @psalm-return self<V>
+     * @psalm-return ($class is null ? self<object> : self<V>)
      */
-    public static function objectOf(string $class): self
+    public static function object(string $class = null): self
     {
         return new self(
-            /**
-             * @return Result<V>
-             */
             function (mixed $value) use ($class): Result {
-                if (!$value instanceof $class) {
-                    return Result::err("Expected object of class $class got ".\get_debug_type($value));
+                if (!is_object($value)) {
+                    return Result::err('Expected object value, got '.\get_debug_type($value));
+                }
+                if (null === $class) {
+                    return Result::ok($value);
                 }
 
-                return Result::ok($value);
+                return $value instanceof $class ? Result::ok($value) : Result::err("Expected object of class $class got ".\get_debug_type($value));
             }
         );
     }
@@ -479,44 +473,6 @@ final class Decoder
     /**
      * @psalm-pure
      *
-     * @psalm-return self<list<mixed>>
-     */
-    public static function list(): self
-    {
-        return self::array()->andThen(
-            /**
-             * @return self<list<mixed>>
-             */
-            function (array $value): Decoder {
-                if (!array_is_list($value)) {
-                    return Decoder::fail('Array '.\print_r($value, true).' is not a list');
-                }
-
-                return Decoder::succeed($value);
-            }
-        );
-    }
-
-    /**
-     * @psalm-pure
-     *
-     * @psalm-return self<non-empty-list<mixed>>
-     */
-    public static function nonEmptyList(): self
-    {
-        return self::list()->andThen(
-            /**
-             * @param list<mixed> $list
-             *
-             * @return self<non-empty-list<mixed>>
-             */
-            fn (array $list): Decoder => 0 === \count($list) ? Decoder::fail('Empty array') : Decoder::succeed($list)
-        );
-    }
-
-    /**
-     * @psalm-pure
-     *
      * @template V
      *
      * @psalm-param self<V> $valueDecoder
@@ -524,7 +480,7 @@ final class Decoder
      *
      * @psalm-return self<V>
      */
-    public static function arrayKey($key, self $valueDecoder): self
+    public static function arrayKey($key, self $valueDecoder = null): self
     {
         return self::array()->andThen(
             /**
@@ -537,7 +493,9 @@ final class Decoder
                     return Decoder::fail("Key `$key` not present in array");
                 }
 
-                return $valueDecoder->run($array[$key])->match(
+                return null === $valueDecoder
+                    ? Decoder::succeed($array[$key])
+                    : $valueDecoder->run($array[$key])->match(
                     /**
                      * @param V $decodedValueAtKey
                      *
@@ -567,7 +525,7 @@ final class Decoder
      *
      * @psalm-return self<DefaultValueType|V>
      */
-    public static function optionalArrayKey($key, self $valueDecoder, $defaultValue = null): self
+    public static function optionalArrayKey($key, self $valueDecoder = null, $defaultValue = null): self
     {
         return self::array()->andThen(
             /**
@@ -580,7 +538,9 @@ final class Decoder
                     return Decoder::succeed($defaultValue);
                 }
 
-                return $valueDecoder->run($array[$key])->match(
+                return null === $valueDecoder
+                    ? Decoder::succeed($array[$key])
+                    : $valueDecoder->run($array[$key])->match(
                     /**
                      * @param V $decodedValueAtKey
                      *
@@ -597,8 +557,6 @@ final class Decoder
             }
         );
     }
-
-    // TODO: Support getting a nested array key
 
     /**
      * Uses associative php array mapping.
@@ -644,9 +602,11 @@ final class Decoder
      *
      * @psalm-return self<list<V>>
      */
-    public static function listOf(Decoder $itemDecoder): self
+    public static function list(self $itemDecoder = null): self
     {
-        return self::list()->andThen(
+        return null === $itemDecoder
+            ? self::_list()
+            : self::_list()->andThen(
             /**
              * @psalm-param list<mixed> $list
              *
@@ -688,9 +648,11 @@ final class Decoder
      *
      * @psalm-return self<non-empty-list<V>>
      */
-    public static function nonEmptyListOf(Decoder $itemDecoder): self
+    public static function nonEmptyList(self $itemDecoder = null): self
     {
-        return self::nonEmptyList()->andThen(
+        return null === $itemDecoder
+            ? self::_nonEmptyList()
+            : self::_nonEmptyList()->andThen(
             /**
              * @psalm-param non-empty-list<mixed> $list
              *
@@ -739,7 +701,7 @@ final class Decoder
      *
      * @psalm-return self<array<string, V>>
      */
-    public static function dictOf(Decoder $itemDecoder): self
+    public static function dictOf(Decoder $itemDecoder = null): self
     {
         return self::array()->andThen(
             /**
@@ -750,8 +712,8 @@ final class Decoder
              * @psalm-return self<array<string, V>>
              */
             fn (array $arr): self => Result::map2(
-                self::listOf(self::string())->run(\array_keys($arr)),
-                self::listOf($itemDecoder)->run(\array_values($arr)),
+                self::list(self::string())->run(\array_keys($arr)),
+                self::list($itemDecoder)->run(\array_values($arr)),
                 /**
                  * @param list<string> $keys
                  * @param list<V>      $vals
@@ -949,6 +911,43 @@ final class Decoder
                 ($decoder6->decodeFn)($value),
                 $mapperFn
             )
+        );
+    }
+    /**
+     * @psalm-pure
+     *
+     * @psalm-return self<non-empty-list<mixed>>
+     */
+    private static function _nonEmptyList(): self
+    {
+        return self::_list()->andThen(
+            /**
+             * @param list<mixed> $list
+             *
+             * @return self<non-empty-list<mixed>>
+             */
+            fn (array $list): Decoder => 0 === \count($list) ? Decoder::fail('Empty array') : Decoder::succeed($list)
+        );
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @psalm-return self<list<mixed>>
+     */
+    private static function _list(): self
+    {
+        return self::array()->andThen(
+            /**
+             * @return self<list<mixed>>
+             */
+            function (array $value): Decoder {
+                if (!array_is_list($value)) {
+                    return Decoder::fail('Array '.\print_r($value, true).' is not a list');
+                }
+
+                return Decoder::succeed($value);
+            }
         );
     }
 }

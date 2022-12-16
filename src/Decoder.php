@@ -208,7 +208,7 @@ final class Decoder
      *
      * @template V
      *
-     * @param ?self<V> itemDecoder
+     * @param ?self<V> $itemDecoder
      *
      * @psalm-return self<array<array-key, V>>
      */
@@ -914,6 +914,45 @@ final class Decoder
         );
     }
     /**
+     * @template V
+     *
+     * @psalm-pure
+     *
+     * @psalm-param self<V> $itemDecoder
+     *
+     * @psalm-return self<iterable<V>>
+     */
+    public static function iterable(self $ofType = null): self
+    {
+        return new self(
+            /**
+             * @psalm-pure
+             *
+             * @psalm-return Result<iterable<V>>
+             */
+            function (mixed $value) use ($ofType): Result {
+                return \is_iterable($value)
+                    ? (null === $ofType
+                        ? Result::ok($value)
+                        : Result::combine(
+                            \array_values(
+                                \iterator_to_array(
+                                    self::iterator_map(
+                                        $value,
+                                        /**
+                                         * @psalm-return Result<V>
+                                         */
+                                        fn (mixed $item): Result => $ofType->run($item),
+                                    )
+                                )
+                            )
+                        )
+                    )
+                    : Result::err('Value of type '.\get_debug_type($value).' is not iterable');
+            }
+        );
+    }
+    /**
      * @return self<scalar>
      */
     public static function scalar(): self
@@ -928,6 +967,23 @@ final class Decoder
                     : Result::err('Value of type '.\get_debug_type($value).' is not a scalar');
             }
         );
+    }
+    /**
+     * @psalm-pure
+     *
+     * @template IteratorType
+     * @template MappedReturn
+     *
+     * @param iterable<IteratorType> $collection
+     * @param pure-callable(IteratorType):MappedReturn $function
+     *
+     * @return \Traversable<MappedReturn>
+     */
+    private static function iterator_map(iterable $collection, callable $function): \Traversable
+    {
+        foreach ($collection as $element) {
+            yield $function($element);
+        }
     }
     /**
      * @psalm-pure

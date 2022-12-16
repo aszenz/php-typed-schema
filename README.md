@@ -1,10 +1,8 @@
 # PHP Typed Schema
 
-Typed Schema is a php library to parse `mixed` data into proper types.
+Typed Schema is a php library to parse unknown data (often as `mixed` type) into properly typed data
 
-It can be used to create typed data from different sources.
-
-It separates the creation of objects from parsing by using mapN functions
+Typed Schema has built-in parser's for common use cases and a simple way to compose them to validate any form of data
 
 ## Use cases
 
@@ -43,6 +41,10 @@ Essentially we want to validate that the array contains three keys of different 
 
 To represent this schema the library provides several functions like `map2`, `map3`, `map4` that compose different decoders.
 
+The library also provides built-in decoders/validators that parse numeric and date strings into their respective types.
+
+Using them we can define our Order object's decoder/validator
+
 ```php
 // The type of this decoder is Decoder<Order>
 $orderDecoder = Decoder::map3(
@@ -56,7 +58,7 @@ $orderDecoder = Decoder::map3(
 
 After defining it we can run it on our array and get the dto or an error if the schema didn't match the data.
 
-Running the decoder gives us a `Result` type which can be either `Ok|Error`, we can unwrap it (throw's exception in case of error) to get our dto.
+Running the decoder gives us a `Result` type which can be either an `Ok` or `Error` object, we can unwrap it (throw's exception in case of error) to get our dto.
 
 ```php
 // Psalm/phpstan will correctly infer the  result as Order
@@ -118,6 +120,16 @@ if ($result->isErr()) {
 
 $data = $result->unwrap();
 ```
+
+## Comparison with other php validation libraries
+
+Other libraries in the php ecosystem are focused on validation or hydration of data into objects.
+
+Typed schmema separates the concern of parsing data and creating objects
+
+It leaves creating objects (or typed information) to the user, only performing the necessary checks to validate data conforms to the schema.
+
+This approach is explicit and doesn't couple object's properties/constructors with the data source.
 
 ## Credits
 

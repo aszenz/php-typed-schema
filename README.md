@@ -125,7 +125,7 @@ $data = $result->unwrap();
 
 Other libraries in the php ecosystem are focused on validation or hydration of data into objects.
 
-Typed schmema separates the concern of parsing data and creating objects
+Typed schema separates concerns of parsing data and creating objects.
 
 It leaves creating objects (or typed information) to the user, only performing the necessary checks to validate data conforms to the schema.
 

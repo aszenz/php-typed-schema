@@ -111,26 +111,6 @@ final class DecoderTest extends TestCase
         self::assertTrue(Decoder::iterable()->run(null)->isErr());
         self::assertTrue(Decoder::iterable()->run('123')->isErr());
         self::assertTrue(Decoder::iterable()->run(1)->isErr());
-    }
-
-    public function testIterableWithItemType(): void
-    {
-        self::assertTrue(Decoder::iterable(Decoder::int())->run([1, 2, 3])->isOk());
-        self::assertTrue(Decoder::iterable(Decoder::string())->run(['hi' => 'bye'])->isOk());
-        self::assertTrue(Decoder::iterable(Decoder::int())->run(
-            (function (): \Generator {
-                foreach (range(0, 10) as $num) {
-                    yield $num;
-                }
-            })()
-        )->isOk());
-        self::assertFalse(Decoder::iterable(Decoder::string())->run(
-            (function (): \Generator {
-                foreach (range(0, 10) as $num) {
-                    yield $num;
-                }
-            })()
-        )->isOk());
         self::assertTrue(Decoder::iterable()->run(null)->isErr());
         self::assertTrue(Decoder::iterable()->run('123')->isErr());
         self::assertTrue(Decoder::iterable()->run(1)->isErr());

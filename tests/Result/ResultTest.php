@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Test\Result;
 
 use Exp\Result\Result;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Exp\Result\Result
- *
- * @uses \Exp\Result\Ok
- * @uses \Exp\Result\Error
- */
+#[CoversClass(\Exp\Result\Result::class)]
+#[UsesClass(\Exp\Result\Ok::class)]
+#[UsesClass(\Exp\Result\Error::class)]
 final class ResultTest extends TestCase
 {
     public function testOkConstructor(): void

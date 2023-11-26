@@ -7,18 +7,21 @@
     executionOrder="random" 
     failOnEmptyTestSuite="true" 
     beStrictAboutOutputDuringTests="true" 
+    beStrictAboutTodoAnnotatedTests="true"
+    beStrictAboutCoverageMetadata="true"
     failOnRisky="true" 
     failOnWarning="true" 
+    failOnNotice="true"
     cacheDirectory=".phpunit.cache" 
     requireCoverageMetadata="true" 
-    beStrictAboutCoverageMetadata="true"
 >
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <coverage/>
+    <coverage includeUncoveredFiles="true" cacheDirectory=".phpunit.cache/code-coverage" pathCoverage="true">
+    </coverage>
     <source>
         <include>
             <directory suffix=".php">src</directory>

@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Test;
 
 use Exp\Decoder;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Exp\Decoder
- *
- * @uses \Exp\Result\Result
- * @uses \Exp\Result\Ok
- * @uses \Exp\Result\Error
- */
+#[CoversClass(\Exp\Decoder::class)]
+#[UsesClass(\Exp\Result\Result::class)]
+#[UsesClass(\Exp\Result\Ok::class)]
+#[UsesClass(\Exp\Result\Error::class)]
 final class DecoderTest extends TestCase
 {
     public function testBool(): void

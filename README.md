@@ -1,6 +1,7 @@
 # PHP Typed Schema
 
 [![ci](https://github.com/aszenz/php-typed-schema/actions/workflows/ci.yml/badge.svg)](https://github.com/aszenz/php-typed-schema/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/aszenz/php-typed-schema/graph/badge.svg?token=O3W4QR98RO)](https://codecov.io/gh/aszenz/php-typed-schema)
 
 PHP Typed Schema is a php library to parse unknown data (often as `mixed` type) into properly typed data
 

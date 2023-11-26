@@ -58,19 +58,21 @@ final class ResultTest extends TestCase
     public function testMatchWithOk(): void
     {
         $val = Result::ok(5);
-        $_ = $val->match(
-            onOk: fn ($value) => self::assertEquals(5, $value),
-            onErr: fn ($_) => self::fail('Should not be possible')
+        $output = $val->match(
+            onOk: fn ($value) => $value,
+            onErr: fn ($_) => null
         );
+        self::assertEquals(5, $output);
     }
 
     public function testMatchWithErr(): void
     {
         $val = Result::err(['missing value']);
-        $_ = $val->match(
-            onErr: fn ($value) => self::assertEquals(['missing value'], $value),
-            onOk: fn ($_) => self::fail('Should not be possible')
+        $output = $val->match(
+            onErr: fn ($value) => $value,
+            onOk: fn ($_) => null
         );
+        self::assertEquals(['missing value'], $output);
     }
 
     public function testMapWithOk(): void
@@ -95,19 +97,25 @@ final class ResultTest extends TestCase
     public function testOrWithOk(): void
     {
         $val = Result::ok(1);
+        $orExpr = $val->or(fn () => Result::ok(5));
         self::assertEquals(
             1,
-            $val->or(fn () => Result::ok(5))->unwrap()
+            $orExpr->unwrap()
         );
+        self::assertTrue($orExpr->isOk());
+        self::assertFalse($orExpr->isErr());
     }
 
     public function testOrWithErr(): void
     {
         $val = Result::err(['missing']);
+        $orExpr = $val->or(fn () => Result::ok(5));
         self::assertEquals(
             5,
-            $val->or(fn () => Result::ok(5))->unwrap()
+            $orExpr->unwrap()
         );
+        self::assertTrue($orExpr->isOk());
+        self::assertFalse($orExpr->isErr());
     }
 
     public function testOrWithBothErr(): void
@@ -115,6 +123,13 @@ final class ResultTest extends TestCase
         $val = Result::err(['missing']);
         self::assertFalse(
             $val->or(fn () => Result::err('problem'))->isOk()
+        );
+        self::assertTrue(
+            $val->or(fn () => Result::err('problem'))->isErr()
+        );
+        self::assertEquals(
+            ['missing', 'problem'],
+            $val->or(fn () => Result::err('problem'))->unwrapError()
         );
     }
 
@@ -201,12 +216,17 @@ final class ResultTest extends TestCase
             fn ($_, $__) => 1
         );
         self::assertTrue($z2->isErr());
-        $z3 = Result::map2(
-            Result::err('missing'),
-            Result::err('missing'),
-            fn ($_, $__) => 1
+    }
+
+    public function testMap2WithErrAndErr(): void
+    {
+        $z = Result::map2(
+            Result::err('problems'),
+            Result::err(['missing']),
+            fn (int $x, int $y): int => $x + $y
         );
-        self::assertTrue($z3->isErr());
+        self::assertTrue($z->isErr());
+        self::assertEquals(['problems', 'missing'], $z->unwrapError());
     }
 
     public function testMap3WithOk(): void

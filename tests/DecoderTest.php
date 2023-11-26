@@ -182,7 +182,7 @@ final class DecoderTest extends TestCase
         $onFailure = $decoder->run(1.5);
         self::assertFalse($onFailure->isOk());
         self::assertTrue($onFailure->isErr());
-        self::assertSame(2, \count($onFailure->unwrapError()));
+        self::assertCount(2, $onFailure->unwrapError());
     }
 
     public function testNullable(): void

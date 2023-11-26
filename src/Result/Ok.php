@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Exp\Result;
 
 /**
- * @template-covariant T
+ * @template T
  *
  * @psalm-internal Exp\Result
  *
  * @psalm-immutable
  */
-final class Ok
+final readonly class Ok
 {
     /**
      * @param T $value

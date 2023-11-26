@@ -10,7 +10,8 @@ $config = new PhpCsFixer\Config();
 
 return $config->setRules([
         '@Symfony' => true,
-        'phpdoc_to_comment' => false
+        'phpdoc_to_comment' => false,
+        'no_superfluous_phpdoc_tags' => false
     ])
     ->setFinder($finder)
 ;

@@ -20,7 +20,7 @@ use Exp\Result\Result;
  *
  * @psalm-immutable
  */
-final class Decoder
+final readonly class Decoder
 {
     /**
      * @psalm-param pure-Closure(mixed): Result<T> $decodeFn

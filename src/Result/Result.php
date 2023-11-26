@@ -9,7 +9,7 @@ namespace Exp\Result;
  *
  * @psalm-immutable
  */
-final class Result
+final readonly class Result
 {
     /**
      * @psalm-param Ok<ValType>|Error $v

@@ -6,10 +6,11 @@ namespace Test\Benchmark;
 
 use Exp\Decoder;
 
-class DecoderBench
+final readonly class DecoderBench
 {
     /**
      * @Revs(1000)
+     *
      * @Iterations(5)
      */
     public function benchOneOf(): void

@@ -9,7 +9,7 @@ namespace Exp\Result;
  *
  * @psalm-immutable
  */
-final class Error
+final readonly class Error
 {
     /**
      * @param non-empty-list<non-empty-string> $errors

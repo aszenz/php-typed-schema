@@ -7,6 +7,8 @@
     ensureArrayStringOffsetsExist="true"
     ensureArrayIntOffsetsExist="true"
     checkForThrowsDocblock="true"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
     checkForThrowsInGlobalScope="true"
     strictBinaryOperands="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -34,6 +36,11 @@
                 <directory name="tests" />
             </errorLevel>
         </RedundantConditionGivenDocblockType>
+        <PossiblyUnusedProperty>
+            <errorLevel type="suppress">
+                <directory name="tests" />
+            </errorLevel>
+        </PossiblyUnusedProperty>
         <MissingThrowsDocblock>
             <errorLevel type="suppress">
                 <directory name="tests" />
@@ -44,6 +51,11 @@
                 <directory name="tests" />
             </errorLevel>
         </UncaughtThrowInGlobalScope>
+        <MixedArgument>
+            <errorLevel type="suppress">
+                <directory name="tests/StaticAnalysis" />
+            </errorLevel>
+        </MixedArgument>
     </issueHandlers>
     <ignoreExceptions>
         <class name="LogicException" />

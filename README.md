@@ -1,9 +1,10 @@
 # PHP Typed Schema
 
 [![ci](https://github.com/aszenz/php-typed-schema/actions/workflows/ci.yml/badge.svg)](https://github.com/aszenz/php-typed-schema/actions/workflows/ci.yml)
-Typed Schema is a php library to parse unknown data (often as `mixed` type) into properly typed data
 
-Typed Schema has built-in parser's for common use cases and a simple way to compose them to validate any form of data
+PHP Typed Schema is a php library to parse unknown data (often as `mixed` type) into properly typed data
+
+Typed Schema has built-in validators's for common use cases and a simple way to compose them to validate any form of data
 
 ## Use cases
 

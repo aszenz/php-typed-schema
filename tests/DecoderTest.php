@@ -89,6 +89,12 @@ final class DecoderTest extends TestCase
         self::assertFalse(Decoder::list()->run(new \stdClass())->isOk());
     }
 
+    public function testNonEmptyList(): void
+    {
+        self::assertFalse(Decoder::nonEmptyList()->run([])->isOk());
+        self::assertTrue(Decoder::nonEmptyList()->run([1, 2])->isOk());
+    }
+
     public function testScalar(): void
     {
         self::assertTrue(Decoder::scalar()->run(12)->isOk());
@@ -273,6 +279,19 @@ final class DecoderTest extends TestCase
 
     public function testArrayKey(): void
     {
+        $decoder = Decoder::arrayKey('foo');
+        self::assertTrue($decoder->run(['foo' => 1])->isOk());
+        self::assertFalse($decoder->run(['foo' => 1])->isErr());
+        self::assertTrue($decoder->run(['foooo' => 2])->isErr());
+        self::assertFalse($decoder->run(['foooo' => 2])->isOk());
+        self::assertTrue($decoder->run(['foo' => 'hey'])->isOk());
+        self::assertFalse($decoder->run(['foo' => 'hey'])->isErr());
+
+        self::assertFalse($decoder->run(['boo' => 1])->isOk());
+    }
+
+    public function testArrayKeyWithValueType(): void
+    {
         $decoder = Decoder::arrayKey('foo', Decoder::int());
         self::assertTrue($decoder->run(['foo' => 1])->isOk());
         self::assertFalse($decoder->run(['foooo' => 2])->isOk());
@@ -280,6 +299,16 @@ final class DecoderTest extends TestCase
     }
 
     public function testOptionalArrayKey(): void
+    {
+        $decoder = Decoder::optionalArrayKey('foo');
+        self::assertTrue($decoder->run(['foo' => 1])->isOk());
+        self::assertFalse($decoder->run(['foo' => 1])->isErr());
+        self::assertTrue($decoder->run(['foooo' => 2])->isOk());
+        self::assertFalse($decoder->run(['foooo' => 2])->isErr());
+        self::assertNull($decoder->run(['foooo' => 2])->unwrap());
+    }
+
+    public function testOptionalArrayKeyWithValueType(): void
     {
         $decoder = Decoder::optionalArrayKey('foo', Decoder::int());
         self::assertTrue($decoder->run(['foo' => 1])->isOk());

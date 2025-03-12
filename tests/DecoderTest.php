@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(\Exp\Decoder::class)]
+#[CoversClass(Decoder::class)]
 #[UsesClass(\Exp\Result\Result::class)]
 #[UsesClass(\Exp\Result\Ok::class)]
 #[UsesClass(\Exp\Result\Error::class)]
@@ -502,7 +502,7 @@ final class Order
     public function __construct(
         public int $id,
         public float $qty,
-        public \DateTimeImmutable $date
+        public \DateTimeImmutable $date,
     ) {
     }
 }
@@ -536,7 +536,7 @@ final class User
         public string $name,
         public \DateTimeImmutable $dob,
         public int $age,
-        public array $hobbies
+        public array $hobbies,
     ) {
     }
 }

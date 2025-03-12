@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(\Exp\Result\Result::class)]
+#[CoversClass(Result::class)]
 #[UsesClass(\Exp\Result\Ok::class)]
 #[UsesClass(\Exp\Result\Error::class)]
 final class ResultTest extends TestCase
@@ -168,9 +168,9 @@ final class ResultTest extends TestCase
     public function testCombineWithOks(): void
     {
         $combinedRes = Result::combine([
-             Result::ok(5),
-             Result::ok(1),
-             Result::ok(4),
+            Result::ok(5),
+            Result::ok(1),
+            Result::ok(4),
         ]);
         self::assertEquals(
             [5, 1, 4],

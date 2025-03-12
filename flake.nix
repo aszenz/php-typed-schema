@@ -20,9 +20,9 @@
       # Nixpkgs instantiated for supported system types.
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
 
-      # use php 8.3 with these extensions
+      # use php 8.4 with these extensions
       php = forAllSystems (system:
-        nixpkgsFor.${system}.php83.withExtensions (
+        nixpkgsFor.${system}.php84.withExtensions (
           { all, enabled }: with all; enabled ++ [
             xdebug
           ]

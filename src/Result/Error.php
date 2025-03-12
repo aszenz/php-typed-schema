@@ -15,7 +15,7 @@ final readonly class Error
      * @param non-empty-list<non-empty-string> $errors
      */
     public function __construct(
-        public array $errors
+        public array $errors,
     ) {
     }
 }

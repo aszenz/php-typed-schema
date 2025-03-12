@@ -26,7 +26,7 @@ final readonly class Decoder
      * @psalm-param pure-Closure(mixed): Result<T> $decodeFn
      */
     private function __construct(
-        private \Closure $decodeFn
+        private \Closure $decodeFn,
     ) {
     }
 
@@ -64,6 +64,7 @@ final readonly class Decoder
      */
     public function andThen(callable $decoderFn): self
     {
+        /** @psalm-suppress InvalidArgument */
         return new self(
             /**
              * @var pure-Closure(mixed): Result<V>
@@ -212,7 +213,7 @@ final readonly class Decoder
      *
      * @psalm-return self<array<array-key, V>>
      */
-    public static function array(self $itemDecoder = null): self
+    public static function array(?self $itemDecoder = null): self
     {
         return new self(
             /**
@@ -248,7 +249,7 @@ final readonly class Decoder
      *
      * @psalm-return ($class is null ? self<object> : self<V>)
      */
-    public static function object(string $class = null): self
+    public static function object(?string $class = null): self
     {
         return new self(
             function (mixed $value) use ($class): Result {
@@ -426,7 +427,7 @@ final readonly class Decoder
      *
      * @psalm-return self<int|float>
      */
-    public static function numeric(\NumberFormatter $formatter = null): self
+    public static function numeric(?\NumberFormatter $formatter = null): self
     {
         return new self(
             /**
@@ -480,7 +481,7 @@ final readonly class Decoder
      *
      * @psalm-return self<V>
      */
-    public static function arrayKey($key, self $valueDecoder = null): self
+    public static function arrayKey($key, ?self $valueDecoder = null): self
     {
         return self::array()->andThen(
             /**
@@ -525,7 +526,7 @@ final readonly class Decoder
      *
      * @psalm-return self<DefaultValueType|V>
      */
-    public static function optionalArrayKey($key, self $valueDecoder = null, $defaultValue = null): self
+    public static function optionalArrayKey($key, ?self $valueDecoder = null, $defaultValue = null): self
     {
         return self::array()->andThen(
             /**
@@ -602,11 +603,11 @@ final readonly class Decoder
      *
      * @psalm-return self<list<V>>
      */
-    public static function list(self $itemDecoder = null): self
+    public static function list(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
-            ? self::_list()
-            : self::_list()->andThen(
+            ? self::__list()
+            : self::__list()->andThen(
                 /**
                  * @psalm-param list<mixed> $list
                  *
@@ -648,11 +649,11 @@ final readonly class Decoder
      *
      * @psalm-return self<non-empty-list<V>>
      */
-    public static function nonEmptyList(self $itemDecoder = null): self
+    public static function nonEmptyList(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
-            ? self::_nonEmptyList()
-            : self::_nonEmptyList()->andThen(
+            ? self::__nonEmptyList()
+            : self::__nonEmptyList()->andThen(
                 /**
                  * @psalm-param non-empty-list<mixed> $list
                  *
@@ -701,7 +702,7 @@ final readonly class Decoder
      *
      * @psalm-return self<array<string, V>>
      */
-    public static function dictOf(Decoder $itemDecoder = null): self
+    public static function dictOf(?Decoder $itemDecoder = null): self
     {
         return self::array()->andThen(
             /**
@@ -1014,9 +1015,9 @@ final readonly class Decoder
      *
      * @psalm-return self<non-empty-list<mixed>>
      */
-    private static function _nonEmptyList(): self
+    private static function __nonEmptyList(): self
     {
-        return self::_list()->andThen(
+        return self::__list()->andThen(
             /**
              * @param list<mixed> $list
              *
@@ -1031,7 +1032,7 @@ final readonly class Decoder
      *
      * @psalm-return self<list<mixed>>
      */
-    private static function _list(): self
+    private static function __list(): self
     {
         return self::array()->andThen(
             /**

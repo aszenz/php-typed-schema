@@ -26,21 +26,21 @@
     }
   },
   "require": {
-    "php": "^8.2"
+    "php": "^8.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^10.4.2",
-    "vimeo/psalm": "^5.1",
-    "friendsofphp/php-cs-fixer": "^3.10",
-    "ramsey/composer-repl": "^1.5",
-    "giorgiosironi/eris": "^0.14.0",
-    "phpstan/phpstan": "^1.8",
-    "phpstan/phpstan-strict-rules": "^1.4",
-    "phpstan/phpstan-phpunit": "^1.1",
-    "psalm/plugin-phpunit": "^0.18.4",
-    "infection/infection": "^0.27.0",
-    "phpbench/phpbench": "^1.2",
-    "roave/infection-static-analysis-plugin": "^1.33"
+    "phpunit/phpunit": "^12.0.7",
+    "vimeo/psalm": "^6.8.9",
+    "friendsofphp/php-cs-fixer": "^3.71",
+    "ramsey/composer-repl": "^1.5.1",
+    "giorgiosironi/eris": "^1.0.0",
+    "phpstan/phpstan": "^2.1.8",
+    "phpstan/phpstan-strict-rules": "^2.0.3",
+    "phpstan/phpstan-phpunit": "^2.0.4",
+    "psalm/plugin-phpunit": "^0.19.2",
+    "infection/infection": "^0.29.12",
+    "phpbench/phpbench": "^1.4.1",
+    "roave/infection-static-analysis-plugin": "^1.37"
   },
   "config": {
     "allow-plugins": {
@@ -49,8 +49,8 @@
     }
   },
   "scripts": {
-    "format": "php-cs-fixer fix --allow-risky=yes",
-    "format:check": "php-cs-fixer check",
+    "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --allow-risky=yes",
+    "format:check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer check",
     "lint": "psalm",
     "test": "phpunit",
     "test:coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover coverage.xml"

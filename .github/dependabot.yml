@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # Enable version updates for composer
+  - package-ecosystem: "composer"
+    # Look for `composer.json` and `composer.lock` files in the `root` directory
+    directory: "/"
+    # Check for updates every week
+    schedule:
+      interval: "weekly"
+    # Limit to 10 open pull requests for version updates
+    open-pull-requests-limit: 10
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

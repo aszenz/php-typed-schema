@@ -15,7 +15,7 @@ final readonly class Result
      * @psalm-param Ok<ValType>|Error $v
      */
     private function __construct(
-        private Ok|Error $v
+        private Ok|Error $v,
     ) {
     }
 

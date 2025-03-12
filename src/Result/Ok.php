@@ -17,7 +17,7 @@ final readonly class Ok
      * @param T $value
      */
     public function __construct(
-        public mixed $value
+        public mixed $value,
     ) {
     }
 

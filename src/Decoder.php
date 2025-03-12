@@ -26,7 +26,7 @@ final readonly class Decoder
      * @psalm-param pure-Closure(mixed): Result<T> $decodeFn
      */
     private function __construct(
-        private \Closure $decodeFn
+        private \Closure $decodeFn,
     ) {
     }
 
@@ -212,7 +212,7 @@ final readonly class Decoder
      *
      * @psalm-return self<array<array-key, V>>
      */
-    public static function array(self $itemDecoder = null): self
+    public static function array(?self $itemDecoder = null): self
     {
         return new self(
             /**
@@ -248,7 +248,7 @@ final readonly class Decoder
      *
      * @psalm-return ($class is null ? self<object> : self<V>)
      */
-    public static function object(string $class = null): self
+    public static function object(?string $class = null): self
     {
         return new self(
             function (mixed $value) use ($class): Result {
@@ -426,7 +426,7 @@ final readonly class Decoder
      *
      * @psalm-return self<int|float>
      */
-    public static function numeric(\NumberFormatter $formatter = null): self
+    public static function numeric(?\NumberFormatter $formatter = null): self
     {
         return new self(
             /**
@@ -480,7 +480,7 @@ final readonly class Decoder
      *
      * @psalm-return self<V>
      */
-    public static function arrayKey($key, self $valueDecoder = null): self
+    public static function arrayKey($key, ?self $valueDecoder = null): self
     {
         return self::array()->andThen(
             /**
@@ -525,7 +525,7 @@ final readonly class Decoder
      *
      * @psalm-return self<DefaultValueType|V>
      */
-    public static function optionalArrayKey($key, self $valueDecoder = null, $defaultValue = null): self
+    public static function optionalArrayKey($key, ?self $valueDecoder = null, $defaultValue = null): self
     {
         return self::array()->andThen(
             /**
@@ -602,7 +602,7 @@ final readonly class Decoder
      *
      * @psalm-return self<list<V>>
      */
-    public static function list(self $itemDecoder = null): self
+    public static function list(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
             ? self::_list()
@@ -648,7 +648,7 @@ final readonly class Decoder
      *
      * @psalm-return self<non-empty-list<V>>
      */
-    public static function nonEmptyList(self $itemDecoder = null): self
+    public static function nonEmptyList(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
             ? self::_nonEmptyList()
@@ -701,7 +701,7 @@ final readonly class Decoder
      *
      * @psalm-return self<array<string, V>>
      */
-    public static function dictOf(Decoder $itemDecoder = null): self
+    public static function dictOf(?Decoder $itemDecoder = null): self
     {
         return self::array()->andThen(
             /**

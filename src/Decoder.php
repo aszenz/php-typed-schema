@@ -64,6 +64,7 @@ final readonly class Decoder
      */
     public function andThen(callable $decoderFn): self
     {
+        /** @psalm-suppress InvalidArgument */
         return new self(
             /**
              * @var pure-Closure(mixed): Result<V>
@@ -605,8 +606,8 @@ final readonly class Decoder
     public static function list(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
-            ? self::_list()
-            : self::_list()->andThen(
+            ? self::__list()
+            : self::__list()->andThen(
                 /**
                  * @psalm-param list<mixed> $list
                  *
@@ -651,8 +652,8 @@ final readonly class Decoder
     public static function nonEmptyList(?self $itemDecoder = null): self
     {
         return null === $itemDecoder
-            ? self::_nonEmptyList()
-            : self::_nonEmptyList()->andThen(
+            ? self::__nonEmptyList()
+            : self::__nonEmptyList()->andThen(
                 /**
                  * @psalm-param non-empty-list<mixed> $list
                  *
@@ -1014,9 +1015,9 @@ final readonly class Decoder
      *
      * @psalm-return self<non-empty-list<mixed>>
      */
-    private static function _nonEmptyList(): self
+    private static function __nonEmptyList(): self
     {
-        return self::_list()->andThen(
+        return self::__list()->andThen(
             /**
              * @param list<mixed> $list
              *
@@ -1031,7 +1032,7 @@ final readonly class Decoder
      *
      * @psalm-return self<list<mixed>>
      */
-    private static function _list(): self
+    private static function __list(): self
     {
         return self::array()->andThen(
             /**

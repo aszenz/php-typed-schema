@@ -9,7 +9,7 @@ use Exp\Decoder;
 /** @var mixed * */
 $mixedVar = $_GET['hi'] ?? \json_decode('{a: [1]}');
 
-/** @psalm-check-type-exact $_1 = \'hi' */
+/** @psalm-check-type-exact $_1 = 'hi' */
 $_1 = Decoder::literal('hi')->run($mixedVar)->unwrap();
 
 /** @psalm-check-type-exact $_2 = \5 */
@@ -61,7 +61,7 @@ $_orderItemDecoder = Decoder::map2(
 );
 $_linesDecoder = Decoder::arrayKey('lines', Decoder::list($_orderItemDecoder));
 
-/** @psalm-check-type-exact $_orderDecoder = \Exp\Decoder<Test\StaticAnalysis\Order> */
+/** @psalm-check-type-exact $_orderDecoder = \Exp\Decoder<\Test\StaticAnalysis\Order> */
 $_orderDecoder = Decoder::map3(
     $_weightDecoder,
     $_nameDecoder,
@@ -76,13 +76,13 @@ $_orderDecoder = Decoder::map3(
          */
         new Order($weight, $name, $lines)
 );
-/** @psalm-check-type-exact $_listOrderDecoder = \list<Test\StaticAnalysis\Order> */
+/** @psalm-check-type-exact $_listOrderDecoder = \list<\Test\StaticAnalysis\Order> */
 $_listOrderDecoder = Decoder::list($_orderDecoder)->run($mixedVar)->unwrap();
 
 /**
  * @psalm-immutable
  */
-class Order
+final class Order
 {
     /**
      * @param float           $weight
@@ -100,7 +100,7 @@ class Order
 /**
  * @psalm-immutable
  */
-class OrderItem
+final class OrderItem
 {
     public function __construct(
         public float $qty,

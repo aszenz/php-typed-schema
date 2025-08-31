@@ -44,6 +44,7 @@ $_weightDecoder = Decoder::arrayKey('weight', Decoder::float());
 /** @psalm-check-type-exact $_nameDecoder = \Exp\Decoder<\string> */
 $_nameDecoder = Decoder::arrayKey('name', Decoder::string());
 /** @psalm-check-type-exact $_linesDecoder = \Exp\Decoder<\list<\Test\StaticAnalysis\OrderItem>> */
+$_linesDecoder = Decoder::list(Decoder::object(OrderItem::class));
 /** @psalm-check-type-exact $_qtyDecoder = \Exp\Decoder<\float> */
 $_qtyDecoder = Decoder::arrayKey('qty', Decoder::float());
 /** @psalm-check-type-exact $_priceDecoder = \Exp\Decoder<\float> */

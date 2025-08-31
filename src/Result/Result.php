@@ -102,12 +102,10 @@ final readonly class Result
      * @template OnOkReturn
      * @template OnErrReturn
      *
-     * @param callable(ValType): OnOkReturn $onOk
-     *
-     * @psalm-param pure-callable(ValType): OnOkReturn $onOk
-     *
+     * @param callable(ValType): OnOkReturn                 $onOk
      * @param callable(list<non-empty-string>): OnErrReturn $onErr
      *
+     * @psalm-param pure-callable(ValType): OnOkReturn $onOk
      * @psalm-param pure-callable(non-empty-list<non-empty-string>): OnErrReturn $onErr
      *
      * @psalm-return OnOkReturn|OnErrReturn
@@ -228,11 +226,10 @@ final readonly class Result
      * @template V
      * @template K
      *
-     * @psalm-param Result<T> $result1
-     * @psalm-param Result<V> $result2
-     *
      * @param callable(T, V):K $mapperFn
      *
+     * @psalm-param Result<T> $result1
+     * @psalm-param Result<V> $result2
      * @psalm-param pure-callable(T, V):K $mapperFn
      *
      * @psalm-return Result<K>
@@ -250,12 +247,11 @@ final readonly class Result
      * @template K
      * @template Z
      *
+     * @param callable(T, V, K):Z $mapperFn
+     *
      * @psalm-param Result<T> $result1
      * @psalm-param Result<V> $result2
      * @psalm-param Result<K> $result3
-     *
-     * @param callable(T, V, K):Z $mapperFn
-     *
      * @psalm-param pure-callable(T, V, K):Z $mapperFn
      *
      * @psalm-return Result<Z>
@@ -274,13 +270,12 @@ final readonly class Result
      * @template T4
      * @template R
      *
+     * @param callable(T1, T2, T3, T4):R $mapperFn
+     *
      * @psalm-param Result<T1> $result1
      * @psalm-param Result<T2> $result2
      * @psalm-param Result<T3> $result3
      * @psalm-param Result<T4> $result4
-     *
-     * @param callable(T1, T2, T3, T4):R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3, T4):R $mapperFn
      *
      * @psalm-return Result<R>
@@ -300,14 +295,14 @@ final readonly class Result
      * @template T5
      * @template R
      *
+     * @param callable(T1, T2, T3, T4, T5):R $mapperFn
+     *
      * @psalm-param Result<T1> $result1
      * @psalm-param Result<T2> $result2
      * @psalm-param Result<T3> $result3
      * @psalm-param Result<T4> $result4
      * @psalm-param Result<T5> $result5
      * @psalm-param pure-callable(T1, T2, T3, T4, T5):R $mapperFn
-     *
-     * @param callable(T1, T2, T3, T4, T5):R $mapperFn
      *
      * @psalm-return Result<R>
      */
@@ -333,15 +328,14 @@ final readonly class Result
      * @template T6
      * @template R
      *
+     * @param callable(T1, T2, T3, T4, T5, T6):R $mapperFn
+     *
      * @psalm-param Result<T1> $result1
      * @psalm-param Result<T2> $result2
      * @psalm-param Result<T3> $result3
      * @psalm-param Result<T4> $result4
      * @psalm-param Result<T5> $result5
      * @psalm-param Result<T6> $result6
-     *
-     * @param callable(T1, T2, T3, T4, T5, T6):R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3, T4, T5, T6):R $mapperFn
      *
      * @psalm-return Result<R>

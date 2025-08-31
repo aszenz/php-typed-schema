@@ -746,11 +746,10 @@ final readonly class Decoder
      * @template T2
      * @template R
      *
-     * @psalm-param self<T1> $decoder1
-     * @psalm-param self<T2> $decoder2
-     *
      * @param callable(T1, T2): R $mapperFn
      *
+     * @psalm-param self<T1> $decoder1
+     * @psalm-param self<T2> $decoder2
      * @psalm-param pure-callable(T1, T2): R $mapperFn
      *
      * @psalm-return self<R>
@@ -773,12 +772,11 @@ final readonly class Decoder
      * @template T3
      * @template R
      *
+     * @param callable(T1, T2, T3): R $mapperFn
+     *
      * @psalm-param self<T1> $decoder1
      * @psalm-param self<T2> $decoder2
      * @psalm-param self<T3> $decoder3
-     *
-     * @param callable(T1, T2, T3): R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3): R $mapperFn
      *
      * @psalm-return self<R>
@@ -807,13 +805,12 @@ final readonly class Decoder
      * @template T4
      * @template R
      *
+     * @param callable(T1, T2, T3, T4): R $mapperFn
+     *
      * @psalm-param self<T1> $decoder1
      * @psalm-param self<T2> $decoder2
      * @psalm-param self<T3> $decoder3
      * @psalm-param self<T4> $decoder4
-     *
-     * @param callable(T1, T2, T3, T4): R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3, T4): R $mapperFn
      *
      * @psalm-return self<R>
@@ -844,14 +841,13 @@ final readonly class Decoder
      * @template T5
      * @template R
      *
+     * @param callable(T1, T2, T3, T4, T5): R $mapperFn
+     *
      * @psalm-param self<T1> $decoder1
      * @psalm-param self<T2> $decoder2
      * @psalm-param self<T3> $decoder3
      * @psalm-param self<T4> $decoder4
      * @psalm-param self<T5> $decoder5
-     *
-     * @param callable(T1, T2, T3, T4, T5): R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3, T4, T5): R $mapperFn
      *
      * @psalm-return self<R>
@@ -884,15 +880,14 @@ final readonly class Decoder
      * @template T6
      * @template R
      *
+     * @param callable(T1, T2, T3, T4, T5, T6): R $mapperFn
+     *
      * @psalm-param self<T1> $decoder1
      * @psalm-param self<T2> $decoder2
      * @psalm-param self<T3> $decoder3
      * @psalm-param self<T4> $decoder4
      * @psalm-param self<T5> $decoder5
      * @psalm-param self<T6> $decoder6
-     *
-     * @param callable(T1, T2, T3, T4, T5, T6): R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3, T4, T5, T6): R $mapperFn
      *
      * @psalm-return self<R>
@@ -960,11 +955,10 @@ final readonly class Decoder
      * @template T2
      * @template R
      *
-     * @psalm-param self<T1> $decoder1
-     * @psalm-param self<T2> $decoder2
-     *
      * @param callable(T1, T2): R $mapperFn
      *
+     * @psalm-param self<T1> $decoder1
+     * @psalm-param self<T2> $decoder2
      * @psalm-param pure-callable(T1, T2): R $mapperFn
      *
      * @psalm-return self<R>
@@ -988,12 +982,11 @@ final readonly class Decoder
      * @template T3
      * @template R
      *
+     * @param callable(T1, T2, T3): R $mapperFn
+     *
      * @psalm-param self<T1> $decoder1
      * @psalm-param self<T2> $decoder2
      * @psalm-param self<T3> $decoder3
-     *
-     * @param callable(T1, T2, T3): R $mapperFn
-     *
      * @psalm-param pure-callable(T1, T2, T3): R $mapperFn
      *
      * @psalm-return self<R>

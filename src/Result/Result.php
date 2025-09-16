@@ -196,7 +196,7 @@ final readonly class Result
             $results,
             /**
              * @psalm-pure
-             * 
+             *
              * @psalm-param Result<list<T>> $overallResult
              * @psalm-param Result<T> $currentResult
              *
@@ -208,6 +208,7 @@ final readonly class Result
                     $currentResult,
                     /**
                      * @psalm-pure
+                     *
                      * @psalm-param list<T> $previousValues
                      * @psalm-param T $currentValue
                      *
@@ -373,7 +374,6 @@ final readonly class Result
      * @psalm-param Result<T2> $result2
      *
      * @psalm-return Result<array{T1, T2}>
-     *
      */
     private static function map2_(self $result1, self $result2): self
     {
@@ -414,6 +414,7 @@ final readonly class Result
         ->map(
             /**
              * @psalm-pure
+             *
              * @psalm-param array{array{T1, T2}, T3} $x
              *
              * @psalm-return array{T1, T2, T3}
@@ -446,6 +447,7 @@ final readonly class Result
         ->map(
             /**
              * @psalm-pure
+             *
              * @psalm-param array{array{T1, T2, T3}, T4} $x
              *
              * @psalm-return array{T1, T2, T3, T4}
@@ -480,6 +482,7 @@ final readonly class Result
         ->map(
             /**
              * @psalm-pure
+             *
              * @psalm-param array{array{T1, T2, T3, T4}, T5} $x
              *
              * @psalm-return array{T1, T2, T3, T4, T5}
@@ -516,6 +519,7 @@ final readonly class Result
         ->map(
             /**
              * @psalm-pure
+             *
              * @psalm-param array{array{T1, T2, T3, T4, T5}, T6} $x
              *
              * @psalm-return array{T1, T2, T3, T4, T5, T6}

@@ -195,10 +195,10 @@ final readonly class Result
         return \array_reduce(
             $results,
             /**
+             * @psalm-pure
+             * 
              * @psalm-param Result<list<T>> $overallResult
              * @psalm-param Result<T> $currentResult
-             *
-             * @psalm-pure
              *
              * @psalm-return Result<list<T>>
              */
@@ -207,6 +207,7 @@ final readonly class Result
                     $overallResult,
                     $currentResult,
                     /**
+                     * @psalm-pure
                      * @psalm-param list<T> $previousValues
                      * @psalm-param T $currentValue
                      *
@@ -236,7 +237,10 @@ final readonly class Result
      */
     public static function map2(self $result1, self $result2, callable $mapperFn): self
     {
-        return self::map2_($result1, $result2)->map(fn (array $v) => $mapperFn($v[0], $v[1]));
+        return self::map2_($result1, $result2)->map(
+            /** @psalm-pure */
+            fn (array $v) => $mapperFn($v[0], $v[1])
+        );
     }
 
     /**
@@ -258,7 +262,10 @@ final readonly class Result
      */
     public static function map3(self $result1, self $result2, self $result3, callable $mapperFn): self
     {
-        return self::map3_($result1, $result2, $result3)->map(fn (array $v) => $mapperFn($v[0], $v[1], $v[2]));
+        return self::map3_($result1, $result2, $result3)->map(
+            /** @psalm-pure */
+            fn (array $v) => $mapperFn($v[0], $v[1], $v[2])
+        );
     }
 
     /**
@@ -282,7 +289,10 @@ final readonly class Result
      */
     public static function map4(self $result1, self $result2, self $result3, self $result4, callable $mapperFn): self
     {
-        return self::map4_($result1, $result2, $result3, $result4)->map(fn (array $v) => $mapperFn($v[0], $v[1], $v[2], $v[3]));
+        return self::map4_($result1, $result2, $result3, $result4)->map(
+            /** @psalm-pure */
+            fn (array $v) => $mapperFn($v[0], $v[1], $v[2], $v[3])
+        );
     }
 
     /**
@@ -313,6 +323,7 @@ final readonly class Result
             /**
              * @psalm-param array{T1, T2, T3, T4, T5} $out
              */
+            /** @psalm-pure */
             fn (array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4])
         );
     }
@@ -347,6 +358,7 @@ final readonly class Result
             /**
              * @psalm-param array{T1, T2, T3, T4, T5, T6} $out
              */
+            /** @psalm-pure */
             fn (array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4], $out[5])
         );
     }
@@ -361,6 +373,7 @@ final readonly class Result
      * @psalm-param Result<T2> $result2
      *
      * @psalm-return Result<array{T1, T2}>
+     *
      */
     private static function map2_(self $result1, self $result2): self
     {
@@ -400,6 +413,7 @@ final readonly class Result
         )
         ->map(
             /**
+             * @psalm-pure
              * @psalm-param array{array{T1, T2}, T3} $x
              *
              * @psalm-return array{T1, T2, T3}
@@ -431,6 +445,7 @@ final readonly class Result
         )
         ->map(
             /**
+             * @psalm-pure
              * @psalm-param array{array{T1, T2, T3}, T4} $x
              *
              * @psalm-return array{T1, T2, T3, T4}
@@ -464,6 +479,7 @@ final readonly class Result
         )
         ->map(
             /**
+             * @psalm-pure
              * @psalm-param array{array{T1, T2, T3, T4}, T5} $x
              *
              * @psalm-return array{T1, T2, T3, T4, T5}
@@ -499,6 +515,7 @@ final readonly class Result
         )
         ->map(
             /**
+             * @psalm-pure
              * @psalm-param array{array{T1, T2, T3, T4, T5}, T6} $x
              *
              * @psalm-return array{T1, T2, T3, T4, T5, T6}

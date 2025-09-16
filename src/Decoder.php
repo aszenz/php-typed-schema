@@ -102,6 +102,7 @@ final readonly class Decoder
     public static function succeed(mixed $value): self
     {
         return new self(
+            /** @psalm-pure */
             fn (mixed $_): Result => Result::ok($value)
         );
     }
@@ -116,6 +117,7 @@ final readonly class Decoder
     public static function fail(array|string $err): self
     {
         return new self(
+            /** @psalm-pure */
             fn (mixed $_): Result => Result::err($err)
         );
     }
@@ -129,6 +131,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<bool>
              */
             function (mixed $value): Result {
@@ -151,6 +154,7 @@ final readonly class Decoder
         return new self(
             /**
              * @return Result<string>
+             * @psalm-pure
              */
             function (mixed $value): Result {
                 if (!is_string($value)) {
@@ -172,6 +176,7 @@ final readonly class Decoder
         return new self(
             /**
              * @return Result<int>
+             * @psalm-pure
              */
             function (mixed $value): Result {
                 if (!is_int($value)) {
@@ -193,6 +198,7 @@ final readonly class Decoder
         return new self(
             /**
              * @return Result<float>
+             * @psalm-pure
              */
             function (mixed $value): Result {
                 if (!is_float($value)) {
@@ -218,6 +224,7 @@ final readonly class Decoder
         return new self(
             /**
              * @return Result<array<V>>
+             * @psalm-pure
              */
             function (mixed $value) use ($itemDecoder): Result {
                 if (!is_array($value)) {
@@ -230,6 +237,7 @@ final readonly class Decoder
                         \array_map(
                             /**
                              * @return Result<V>
+                             * @psalm-pure
                              */
                             fn (mixed $v): Result => $itemDecoder->run($v),
                             \array_values($value)
@@ -252,6 +260,10 @@ final readonly class Decoder
     public static function object(?string $class = null): self
     {
         return new self(
+            /**
+             * @psalm-pure
+             * @return Result<object|V>
+             */
             function (mixed $value) use ($class): Result {
                 if (!is_object($value)) {
                     return Result::err('Expected object value, got '.\get_debug_type($value));
@@ -279,10 +291,16 @@ final readonly class Decoder
     public static function unionOf(self $decoder1, self $decoder2): self
     {
         return new self(
-            /*
+            /**
+             * @psalm-pure
              * @return Result<V1|V2>
              */
-            fn (mixed $value): Result => $decoder1->run($value)->or(fn () => $decoder2->run($value))
+            fn (mixed $value): Result => $decoder1->run($value)->or(
+                /**
+                 * @psalm-pure
+                 */
+                fn () => $decoder2->run($value)
+            )
         );
     }
 
@@ -299,6 +317,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<V>
              */
             function (mixed $value) use ($decoders): Result {
@@ -337,6 +356,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<V|null>
              */
             function (mixed $value) use ($decoder): Result {
@@ -362,6 +382,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @psalm-return Result<V>
              */
             function (mixed $value) use ($literal): Result {
@@ -381,6 +402,7 @@ final readonly class Decoder
     {
         return self::string()->andThen(
             /**
+             * @psalm-pure
              * @psalm-return self<non-empty-string>
              */
             function (string $value): Decoder {
@@ -431,6 +453,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<int|float>
              */
             function (mixed $value) use ($formatter): Result {
@@ -476,7 +499,7 @@ final readonly class Decoder
      *
      * @template V
      *
-     * @psalm-param self<V> $valueDecoder
+     * @psalm-param ?self<V> $valueDecoder
      * @psalm-param array-key $key
      *
      * @psalm-return self<V>
@@ -498,12 +521,14 @@ final readonly class Decoder
                     ? Decoder::succeed($array[$key])
                     : $valueDecoder->run($array[$key])->match(
                         /**
+                         * @psalm-pure
                          * @param V $decodedValueAtKey
                          *
                          * @return self<V>
                          */
                         fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
                         /**
+                         * @psalm-pure
                          * @param non-empty-list<non-empty-string> $decoderErrs
                          *
                          * @return self<V>
@@ -520,8 +545,8 @@ final readonly class Decoder
      * @template V
      * @template DefaultValueType
      *
-     * @psalm-param self<V> $valueDecoder
-     * @psalm-param DefaultValueType $defaultValue
+     * @psalm-param ?self<V> $valueDecoder
+     * @psalm-param ?DefaultValueType $defaultValue
      * @psalm-param array-key $key
      *
      * @psalm-return self<DefaultValueType|V>
@@ -543,12 +568,14 @@ final readonly class Decoder
                     ? Decoder::succeed($array[$key])
                     : $valueDecoder->run($array[$key])->match(
                         /**
+                         * @psalm-pure
                          * @param V $decodedValueAtKey
                          *
                          * @return self<V>
                          */
                         fn ($decodedValueAtKey): self => self::succeed($decodedValueAtKey),
                         /**
+                         * @psalm-pure
                          * @param non-empty-list<non-empty-string> $decoderErrs
                          *
                          * @return self<V>
@@ -574,6 +601,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<V>
              */
             function (mixed $jsonString) use ($jsonDecoder): Result {
@@ -599,7 +627,7 @@ final readonly class Decoder
      *
      * @psalm-pure
      *
-     * @psalm-param self<V> $itemDecoder
+     * @psalm-param ?self<V> $itemDecoder
      *
      * @psalm-return self<list<V>>
      */
@@ -618,6 +646,7 @@ final readonly class Decoder
                 fn (array $list): Decoder => Result::combine(
                     \array_map(
                         /**
+                         * @psalm-pure
                          * @psalm-return Result<V>
                          */
                         fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
@@ -625,12 +654,14 @@ final readonly class Decoder
                     )
                 )->match(
                     /**
+                     * @psalm-pure
                      * @psalm-param list<V> $listOfDecodedValues
                      *
                      * @psalm-return self<list<V>>
                      */
                     fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
                     /**
+                     * @psalm-pure
                      * @param non-empty-list<non-empty-string> $errors
                      *
                      * @return self<list<V>>
@@ -645,7 +676,7 @@ final readonly class Decoder
      *
      * @psalm-pure
      *
-     * @psalm-param self<V> $itemDecoder
+     * @psalm-param ?self<V> $itemDecoder
      *
      * @psalm-return self<non-empty-list<V>>
      */
@@ -668,6 +699,7 @@ final readonly class Decoder
                     $res = Result::combine(
                         \array_map(
                             /**
+                             * @psalm-pure
                              * @psalm-return Result<V>
                              */
                             fn (mixed $item): Result => ($itemDecoder->decodeFn)($item),
@@ -677,12 +709,14 @@ final readonly class Decoder
 
                     return $res->match(
                         /**
+                         * @psalm-pure
                          * @psalm-param non-empty-list<V> $listOfDecodedValues
                          *
                          * @psalm-return self<non-empty-list<V>>
                          */
                         fn (array $listOfDecodedValues): self => self::succeed($listOfDecodedValues),
                         /**
+                         * @psalm-pure
                          * @param non-empty-list<non-empty-string> $errors
                          *
                          * @return self<non-empty-list<V>>
@@ -716,6 +750,7 @@ final readonly class Decoder
                 self::list(self::string())->run(\array_keys($arr)),
                 self::list($itemDecoder)->run(\array_values($arr)),
                 /**
+                 * @psalm-pure
                  * @param list<string> $keys
                  * @param list<V>      $vals
                  *
@@ -724,12 +759,14 @@ final readonly class Decoder
                 fn (array $keys, array $vals): array => \array_combine($keys, $vals)
             )->match(
                 /**
+                 * @psalm-pure
                  * @param array<string, V> $decodedVal
                  *
                  * @return self<array<string, V>>
                  */
                 fn (array $decodedVal): self => self::succeed($decodedVal),
                 /**
+                 * @psalm-pure
                  * @param non-empty-list<non-empty-string> $decodingErrs
                  *
                  * @return self<array<string, V>>
@@ -758,6 +795,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<R>
              */
             fn (mixed $value): Result => Result::map2(($decoder1->decodeFn)($value), ($decoder2->decodeFn)($value), $mapperFn)
@@ -785,6 +823,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<R>
              */
             fn (mixed $value): Result => Result::map3(
@@ -819,6 +858,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<R>
              */
             fn (mixed $value): Result => Result::map4(
@@ -856,6 +896,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<R>
              */
             fn (mixed $value): Result => Result::map5(
@@ -896,6 +937,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @return Result<R>
              */
             fn (mixed $value): Result => Result::map6(
@@ -938,6 +980,7 @@ final readonly class Decoder
     {
         return new self(
             /**
+             * @psalm-pure
              * @psalm-return Result<scalar>
              */
             function (mixed $value): Result {
@@ -966,6 +1009,9 @@ final readonly class Decoder
     public static function arrayMap2(self $decoder1, self $decoder2, callable $mapperFn): self
     {
         return new self(
+            /**
+             * @psalm-pure
+             */
             fn (mixed $value): Result => self::map2(
                 self::arrayKey(0, $decoder1),
                 self::arrayKey(1, $decoder2),
@@ -994,6 +1040,9 @@ final readonly class Decoder
     public static function arrayMap3(self $decoder1, self $decoder2, self $decoder3, callable $mapperFn): self
     {
         return new self(
+            /**
+             * @psalm-pure
+             */
             fn (mixed $value): Result => self::map3(
                 self::arrayKey(0, $decoder1),
                 self::arrayKey(1, $decoder2),
@@ -1012,6 +1061,7 @@ final readonly class Decoder
     {
         return self::__list()->andThen(
             /**
+             * @psalm-pure
              * @param list<mixed> $list
              *
              * @return self<non-empty-list<mixed>>
@@ -1029,6 +1079,7 @@ final readonly class Decoder
     {
         return self::array()->andThen(
             /**
+             * @psalm-pure
              * @return self<list<mixed>>
              */
             function (array $value): Decoder {

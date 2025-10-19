@@ -4,8 +4,8 @@ php-version = "8.4.0"
 use-pager = true
 
 [source]
-paths = ["src/"]
-includes = ["vendor"]
+paths = ["src/", "tests"]
+includes = []
 excludes = []
 
 [formatter]
@@ -15,16 +15,24 @@ use-tabs = false
 
 [linter]
 integrations = ["phpunit"]
+baseline = "linter-baseline.toml"
 
 [linter.rules]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
+cyclomatic-complexity = { enabled = false }
+too-many-methods = { enabled = false }
+excessive-parameter-list = { enabled = false }
+kan-defect = { enabled = false }
 halstead = { effort-threshold = 7000 }
+no-boolean-flag-parameter = { enabled = false }
 
 [analyzer]
+excludes = ["tests"]
 find-unused-definitions = true
 find-unused-expressions = true
 analyze-dead-code = true
 check-throws = true
 allow-possibly-undefined-array-keys = true
 perform-heuristic-checks = true
+baseline = "analyzer-baseline.toml"

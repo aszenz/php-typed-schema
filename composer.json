@@ -31,7 +31,6 @@
   "require-dev": {
     "phpunit/phpunit": "^12.3.7",
     "vimeo/psalm": "^6.13.1",
-    "friendsofphp/php-cs-fixer": "^3.86.0",
     "ramsey/composer-repl": "^1.5.1",
     "giorgiosironi/eris": "^1.0.0",
     "phpstan/phpstan": "^2.1.22",
@@ -40,18 +39,20 @@
     "psalm/plugin-phpunit": "^0.19.5",
     "infection/infection": "^0.29.14",
     "phpbench/phpbench": "^1.4.1",
-    "roave/infection-static-analysis-plugin": "^1.39.0"
+    "roave/infection-static-analysis-plugin": "^1.39.0",
+    "carthage-software/mago": "^1.0.0-beta.34"
   },
   "config": {
     "allow-plugins": {
       "ramsey/composer-repl": true,
-      "infection/extension-installer": true
+      "infection/extension-installer": true,
+      "carthage-software/mago": true
     }
   },
   "scripts": {
-    "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --allow-risky=yes",
-    "format:check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer check",
-    "lint": "psalm",
+    "format": "mago fmt",
+    "format:check": "mago fmt -c",
+    "lint": "psalm && mago lint && mago analyze",
     "test": "phpunit",
     "test:coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover coverage.xml"
   }

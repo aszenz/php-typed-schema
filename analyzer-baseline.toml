@@ -1,0 +1,4 @@
+[[entries."src/Decoder.php".issues]]
+code = "invalid-template-tag"
+start_line = 383
+end_line = 383

@@ -16,8 +16,7 @@ final readonly class Result
      */
     private function __construct(
         private Ok|Error $v,
-    ) {
-    }
+    ) {}
 
     /**
      * @psalm-pure
@@ -47,11 +46,7 @@ final readonly class Result
          *
          * @var self<never>
          */
-        return new self(
-            new Error(
-                \is_string($errs) ? [$errs] : $errs
-            )
-        );
+        return new self(new Error(\is_string($errs) ? [$errs] : $errs));
     }
 
     /**
@@ -153,9 +148,8 @@ final readonly class Result
         }
         $result = $getResult();
 
-        return $result->v instanceof Error ? Result::err(
-            \array_merge($this->v->errors, $result->v->errors)
-        ) : $result;
+        /** @mago-expect analyzer:possibly-invalid-argument */
+        return $result->v instanceof Error ? Result::err(\array_merge($this->v->errors, $result->v->errors)) : $result;
     }
 
     /**
@@ -192,6 +186,9 @@ final readonly class Result
          */
         $empty = Result::ok([]);
 
+        /**
+         * @mago-expect analyzer:invalid-argument
+         */
         return \array_reduce(
             $results,
             /**
@@ -202,22 +199,20 @@ final readonly class Result
              *
              * @psalm-return Result<list<T>>
              */
-            function (Result $overallResult, Result $currentResult): Result {
-                return Result::map2(
-                    $overallResult,
-                    $currentResult,
-                    /**
-                     * @psalm-pure
-                     *
-                     * @psalm-param list<T> $previousValues
-                     * @psalm-param T $currentValue
-                     *
-                     * @psalm-return list<T>
-                     */
-                    fn (array $previousValues, $currentValue): array => [...$previousValues, $currentValue]
-                );
-            },
-            $empty
+            fn(Result $overallResult, Result $currentResult): Result => Result::map2(
+                $overallResult,
+                $currentResult,
+                /**
+                 * @psalm-pure
+                 *
+                 * @psalm-param list<T> $previousValues
+                 * @psalm-param T $currentValue
+                 *
+                 * @psalm-return list<T>
+                 */
+                fn(array $previousValues, $currentValue): array => [...$previousValues, $currentValue],
+            ),
+            $empty,
         );
     }
 
@@ -240,7 +235,7 @@ final readonly class Result
     {
         return self::map2_($result1, $result2)->map(
             /** @psalm-pure */
-            fn (array $v) => $mapperFn($v[0], $v[1])
+            fn(array $v) => $mapperFn($v[0], $v[1]),
         );
     }
 
@@ -265,7 +260,7 @@ final readonly class Result
     {
         return self::map3_($result1, $result2, $result3)->map(
             /** @psalm-pure */
-            fn (array $v) => $mapperFn($v[0], $v[1], $v[2])
+            fn(array $v) => $mapperFn($v[0], $v[1], $v[2]),
         );
     }
 
@@ -292,7 +287,7 @@ final readonly class Result
     {
         return self::map4_($result1, $result2, $result3, $result4)->map(
             /** @psalm-pure */
-            fn (array $v) => $mapperFn($v[0], $v[1], $v[2], $v[3])
+            fn(array $v) => $mapperFn($v[0], $v[1], $v[2], $v[3]),
         );
     }
 
@@ -317,15 +312,20 @@ final readonly class Result
      *
      * @psalm-return Result<R>
      */
-    public static function map5(self $result1, self $result2, self $result3, self $result4, self $result5, callable $mapperFn): self
-    {
-        return self::map5_($result1, $result2, $result3, $result4, $result5)
-        ->map(
+    public static function map5(
+        self $result1,
+        self $result2,
+        self $result3,
+        self $result4,
+        self $result5,
+        callable $mapperFn,
+    ): self {
+        return self::map5_($result1, $result2, $result3, $result4, $result5)->map(
             /**
              * @psalm-param array{T1, T2, T3, T4, T5} $out
              */
             /** @psalm-pure */
-            fn (array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4])
+            fn(array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4]),
         );
     }
 
@@ -352,15 +352,21 @@ final readonly class Result
      *
      * @psalm-return Result<R>
      */
-    public static function map6(self $result1, self $result2, self $result3, self $result4, self $result5, self $result6, callable $mapperFn): self
-    {
-        return self::map6_($result1, $result2, $result3, $result4, $result5, $result6)
-        ->map(
+    public static function map6(
+        self $result1,
+        self $result2,
+        self $result3,
+        self $result4,
+        self $result5,
+        self $result6,
+        callable $mapperFn,
+    ): self {
+        return self::map6_($result1, $result2, $result3, $result4, $result5, $result6)->map(
             /**
              * @psalm-param array{T1, T2, T3, T4, T5, T6} $out
              */
             /** @psalm-pure */
-            fn (array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4], $out[5])
+            fn(array $out) => $mapperFn($out[0], $out[1], $out[2], $out[3], $out[4], $out[5]),
         );
     }
 
@@ -386,9 +392,11 @@ final readonly class Result
         if ($result1->v instanceof Error && $result2->v instanceof Ok) {
             return self::err($result1->v->errors);
         }
+        /** @mago-expect analyzer:possibly-invalid-argument */
         if ($result1->v instanceof Error && $result2->v instanceof Error) {
             return self::err(\array_merge($result1->v->errors, $result2->v->errors));
         }
+        /** @mago-expect analyzer:unhandled-thrown-type */
         throw new \LogicException();
     }
 
@@ -407,11 +415,7 @@ final readonly class Result
      */
     private static function map3_(self $result1, self $result2, self $result3): self
     {
-        return self::map2_(
-            self::map2_($result1, $result2),
-            $result3
-        )
-        ->map(
+        return self::map2_(self::map2_($result1, $result2), $result3)->map(
             /**
              * @psalm-pure
              *
@@ -419,7 +423,7 @@ final readonly class Result
              *
              * @psalm-return array{T1, T2, T3}
              */
-            fn (array $x): array => [$x[0][0], $x[0][1], $x[1]]
+            fn(array $x): array => [$x[0][0], $x[0][1], $x[1]],
         );
     }
 
@@ -440,11 +444,7 @@ final readonly class Result
      */
     private static function map4_(self $result1, self $result2, self $result3, self $result4): self
     {
-        return self::map2_(
-            self::map3_($result1, $result2, $result3),
-            $result4
-        )
-        ->map(
+        return self::map2_(self::map3_($result1, $result2, $result3), $result4)->map(
             /**
              * @psalm-pure
              *
@@ -452,7 +452,7 @@ final readonly class Result
              *
              * @psalm-return array{T1, T2, T3, T4}
              */
-            fn (array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[1]]
+            fn(array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[1]],
         );
     }
 
@@ -475,11 +475,7 @@ final readonly class Result
      */
     private static function map5_(self $result1, self $result2, self $result3, self $result4, self $result5): self
     {
-        return self::map2_(
-            self::map4_($result1, $result2, $result3, $result4),
-            $result5
-        )
-        ->map(
+        return self::map2_(self::map4_($result1, $result2, $result3, $result4), $result5)->map(
             /**
              * @psalm-pure
              *
@@ -487,7 +483,7 @@ final readonly class Result
              *
              * @psalm-return array{T1, T2, T3, T4, T5}
              */
-            fn (array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[0][3], $x[1]]
+            fn(array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[0][3], $x[1]],
         );
     }
 
@@ -510,13 +506,15 @@ final readonly class Result
      *
      * @psalm-return Result<array{T1, T2, T3, T4, T5, T6}>
      */
-    private static function map6_(self $result1, self $result2, self $result3, self $result4, self $result5, self $result6): self
-    {
-        return self::map2_(
-            self::map5_($result1, $result2, $result3, $result4, $result5),
-            $result6
-        )
-        ->map(
+    private static function map6_(
+        self $result1,
+        self $result2,
+        self $result3,
+        self $result4,
+        self $result5,
+        self $result6,
+    ): self {
+        return self::map2_(self::map5_($result1, $result2, $result3, $result4, $result5), $result6)->map(
             /**
              * @psalm-pure
              *
@@ -524,7 +522,7 @@ final readonly class Result
              *
              * @psalm-return array{T1, T2, T3, T4, T5, T6}
              */
-            fn (array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[0][3], $x[0][4], $x[1]]
+            fn(array $x): array => [$x[0][0], $x[0][1], $x[0][2], $x[0][3], $x[0][4], $x[1]],
         );
     }
 }

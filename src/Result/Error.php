@@ -16,6 +16,5 @@ final readonly class Error
      */
     public function __construct(
         public array $errors,
-    ) {
-    }
+    ) {}
 }

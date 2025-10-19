@@ -18,8 +18,7 @@ final readonly class Ok
      */
     public function __construct(
         public mixed $value,
-    ) {
-    }
+    ) {}
 
     /**
      * @template V

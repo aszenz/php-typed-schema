@@ -37,7 +37,10 @@ $_8 = Decoder::object(\DateTimeImmutable::class)->run($mixedVar);
 $_9 = Decoder::list(Decoder::string())->run($mixedVar);
 
 /** @psalm-check-type-exact $_10 = \Exp\Result\Result<list<bool>> */
-$_10 = Decoder::list(Decoder::string())->map(fn (array $values): array => \array_map(fn (string $v): bool => (bool) $v, $values))->run($mixedVar);
+$_10 = Decoder::list(Decoder::string())->map(fn(array $values): array => \array_map(
+    fn(string $v): bool => (bool) $v,
+    $values,
+))->run($mixedVar);
 
 /** @psalm-check-type-exact $_weightDecoder = \Exp\Decoder<\float> */
 $_weightDecoder = Decoder::arrayKey('weight', Decoder::float());
@@ -53,12 +56,13 @@ $_priceDecoder = Decoder::arrayKey('price', Decoder::float());
 $_orderItemDecoder = Decoder::map2(
     $_qtyDecoder,
     $_priceDecoder,
-    fn ($qty, $price) =>
+    fn($qty, $price) => (
         /**
          * @psalm-check-type-exact $qty = \float
          * @psalm-check-type-exact $price = \float
          */
         new OrderItem($qty, $price)
+    ),
 );
 $_linesDecoder = Decoder::arrayKey('lines', Decoder::list($_orderItemDecoder));
 
@@ -67,15 +71,16 @@ $_orderDecoder = Decoder::map3(
     $_weightDecoder,
     $_nameDecoder,
     $_linesDecoder,
-    fn ($weight, $name, $lines) =>
+    fn($weight, $name, $lines) => (
         /**
          * NOTE: Psalm cannot assert $lines type this because it lacks higher order template types.
-         * TODO:NOT_WORKING psalm-check-type-exact $lines = \list<Test\StaticAnalysis\OrderItem>.
+         * TODO(@aszenz):NOT_WORKING psalm-check-type-exact $lines = \list<Test\StaticAnalysis\OrderItem>.
          *
          * @psalm-check-type-exact $weight = \float
          * @psalm-check-type-exact $name = \string
          */
         new Order($weight, $name, $lines)
+    ),
 );
 /** @psalm-check-type-exact $_listOrderDecoder = \list<\Test\StaticAnalysis\Order> */
 $_listOrderDecoder = Decoder::list($_orderDecoder)->run($mixedVar)->unwrap();
@@ -94,8 +99,7 @@ final class Order
         public float $weight,
         public string $name,
         public array $lines,
-    ) {
-    }
+    ) {}
 }
 
 /**
@@ -106,6 +110,5 @@ final class OrderItem
     public function __construct(
         public float $qty,
         public float $price,
-    ) {
-    }
+    ) {}
 }

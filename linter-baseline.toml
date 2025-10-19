@@ -1,0 +1,54 @@
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 78
+end_line = 78
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 245
+end_line = 245
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 635
+end_line = 635
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 645
+end_line = 645
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 695
+end_line = 695
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 703
+end_line = 703
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 740
+end_line = 740
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 749
+end_line = 749
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 757
+end_line = 757
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 1024
+end_line = 1028
+
+[[entries."src/Decoder.php".issues]]
+code = "prefer-first-class-callable"
+start_line = 1055
+end_line = 1060

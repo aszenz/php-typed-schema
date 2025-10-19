@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd" 
-    bootstrap="vendor/autoload.php" 
-    colors="true" 
-    executionOrder="random" 
-    failOnEmptyTestSuite="true" 
-    beStrictAboutOutputDuringTests="true" 
-    beStrictAboutTodoAnnotatedTests="true"
-    beStrictAboutCoverageMetadata="true"
-    failOnRisky="true" 
-    failOnWarning="true" 
-    failOnNotice="true"
-    cacheDirectory=".phpunit.cache" 
-    requireCoverageMetadata="true" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.4/phpunit.xsd" 
+  bootstrap="vendor/autoload.php" 
+  colors="true" 
+  executionOrder="random" 
+  failOnEmptyTestSuite="true" 
+  beStrictAboutOutputDuringTests="true" 
+  beStrictAboutChangesToGlobalState="true"
+  beStrictAboutCoverageMetadata="true" 
+  beStrictAboutTestsThatDoNotTestAnything="true"
+  failOnRisky="true" 
+  failOnWarning="true" 
+  failOnNotice="true" 
+  cacheDirectory=".phpunit.cache" 
+  requireCoverageMetadata="true"
 >
-    <testsuites>
-        <testsuite name="default">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
-    <coverage includeUncoveredFiles="true" cacheDirectory=".phpunit.cache/code-coverage" pathCoverage="true">
-    </coverage>
-    <source>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </source>
+  <testsuites>
+    <testsuite name="default">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <coverage includeUncoveredFiles="true" pathCoverage="true">
+  </coverage>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
 </phpunit>

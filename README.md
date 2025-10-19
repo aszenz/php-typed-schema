@@ -7,6 +7,12 @@ PHP Typed Schema is a php library to parse unknown data (often as `mixed` type) 
 
 Typed Schema has built-in validators's for common use cases and a simple way to compose them to validate any form of data
 
+## Install
+
+```bash
+composer require aszenz/php-typed-schema
+```
+
 ## Use cases
 
 ### Parsing array into typed dto
